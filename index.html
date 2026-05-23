@@ -4,12 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ครูชีวะ 101 | Phakawat Songmuang E-Portfolio</title>
+    
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts: Prompt -->
+    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Font Awesome for Icons -->
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- AOS Animation CSS -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     
     <script>
         tailwind.config = {
@@ -17,16 +20,23 @@
                 extend: {
                     fontFamily: { sans: ['Prompt', 'sans-serif'] },
                     colors: {
-                        primary: '#10b981', // Emerald green for Biology vibe
-                        surface: '#f8fafc',
+                        primary: '#10b981', 
+                        secondary: '#0ea5e9',
                     },
                     animation: {
-                        'fade-in': 'fadeIn 0.5s ease-out forwards',
+                        'blob': 'blob 7s infinite',
+                        'float': 'float 6s ease-in-out infinite',
                     },
                     keyframes: {
-                        fadeIn: {
-                            '0%': { opacity: '0', transform: 'translateY(15px)' },
-                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        blob: {
+                            '0%': { transform: 'translate(0px, 0px) scale(1)' },
+                            '33%': { transform: 'translate(30px, -50px) scale(1.1)' },
+                            '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
+                            '100%': { transform: 'translate(0px, 0px) scale(1)' },
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
                         }
                     }
                 }
@@ -37,124 +47,167 @@
         body {
             background-color: #f8fafc;
             color: #334155;
-            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
         }
         
-        /* Clean minimal card */
-        .minimal-card {
-            background: #ffffff;
-            border-radius: 20px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
-            border: 1px solid rgba(0, 0, 0, 0.02);
-            transition: all 0.3s ease;
+        /* Particle Background */
+        #particles-js {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1;
         }
-        .minimal-card:hover {
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
-            transform: translateY(-3px);
+
+        /* Glassmorphism Cards */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+            border-radius: 24px;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        .hover-lift:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(16, 185, 129, 0.1);
+        }
+
+        /* Gradient Text */
+        .text-gradient {
+            background-image: linear-gradient(135deg, #10b981, #0ea5e9);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         /* SPA Page Logic */
-        .page-section { display: none; }
-        .page-section.active { display: block; animation: fade-in 0.5s forwards; }
+        .page-section { display: none; opacity: 0; }
+        .page-section.active { display: block; opacity: 1; animation: fadeIn 0.6s ease-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 
         /* Navigation Links */
-        .nav-link {
-            position: relative;
-            color: #64748b;
-            transition: color 0.2s ease;
-        }
+        .nav-link { position: relative; color: #64748b; transition: all 0.3s ease; }
         .nav-link:hover, .nav-link.active { color: #10b981; font-weight: 600; }
         .nav-link::after {
-            content: ''; position: absolute; bottom: -4px; left: 0; width: 0%; height: 2px;
-            background-color: #10b981; transition: width 0.3s ease; border-radius: 2px;
+            content: ''; position: absolute; bottom: -4px; left: 50%; transform: translateX(-50%);
+            width: 0%; height: 3px; background: linear-gradient(90deg, #10b981, #0ea5e9);
+            transition: width 0.3s ease; border-radius: 2px;
         }
-        .nav-link:hover::after, .nav-link.active::after { width: 100%; }
+        .nav-link:hover::after, .nav-link.active::after { width: 80%; }
+
+        /* Fancy Link Item */
+        .fancy-item { position: relative; overflow: hidden; z-index: 1; transition: all 0.3s; }
+        .fancy-item::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(120deg, transparent, rgba(16, 185, 129, 0.05), transparent);
+            transform: translateX(-100%); transition: 0.6s; z-index: -1;
+        }
+        .fancy-item:hover::before { transform: translateX(100%); }
+        .fancy-item:hover { border-color: #10b981; padding-left: 1rem; }
 
         /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
-        
-        .timeline-dot {
-            position: absolute; left: -25px; top: 6px; width: 12px; height: 12px;
-            background-color: #10b981; border-radius: 50%; border: 3px solid #d1fae5;
-        }
+        ::-webkit-scrollbar-thumb:hover { background: #10b981; }
     </style>
 </head>
 <body class="flex flex-col min-h-screen">
 
+    <!-- Interactive Background -->
+    <div id="particles-js"></div>
+    <div class="fixed top-0 left-0 w-full h-full overflow-hidden -z-10 pointer-events-none">
+        <div class="absolute top-[-10%] left-[-10%] w-[40vw] h-[40vw] bg-emerald-100 rounded-full mix-blend-multiply filter blur-[80px] opacity-60 animate-blob"></div>
+        <div class="absolute top-[20%] right-[-10%] w-[40vw] h-[40vw] bg-sky-100 rounded-full mix-blend-multiply filter blur-[80px] opacity-60 animate-blob" style="animation-delay: 2s;"></div>
+    </div>
+
     <!-- Navbar -->
-    <nav class="bg-white/90 backdrop-blur-md sticky top-0 z-50 border-b border-gray-100 shadow-sm">
-        <div class="max-w-6xl mx-auto px-4">
-            <div class="flex justify-between items-center h-16">
+    <nav class="bg-white/70 backdrop-blur-xl sticky top-0 z-50 border-b border-white shadow-sm transition-all">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6">
+            <div class="flex justify-between items-center h-20">
                 <!-- Logo -->
-                <div class="flex items-center cursor-pointer" onclick="showPage('page1')">
-                    <img src="https://drive.google.com/thumbnail?id=1J57aSX6-5shwyPAcfTuDTRzdVZGxNPYM&sz=w200" alt="Logo" class="h-10 w-10 rounded-full object-cover mr-3 border border-gray-100 shadow-sm">
-                    <span class="font-bold text-xl text-gray-800 tracking-tight">ครูชีวะ 101</span>
+                <div class="flex items-center cursor-pointer group" onclick="showPage('page1')">
+                    <div class="relative w-12 h-12 mr-3">
+                        <div class="absolute inset-0 bg-emerald-400 rounded-full animate-ping opacity-20 group-hover:opacity-40"></div>
+                        <img src="https://drive.google.com/thumbnail?id=1J57aSX6-5shwyPAcfTuDTRzdVZGxNPYM&sz=w200" alt="Logo" class="relative w-full h-full rounded-full object-cover border-2 border-white shadow-md transform group-hover:rotate-12 transition duration-500">
+                    </div>
+                    <span class="font-bold text-2xl text-gradient tracking-tight">ครูชีวะ 101</span>
                 </div>
                 <!-- Menu -->
-                <div class="hidden md:flex space-x-6 text-sm">
-                    <button onclick="showPage('page1')" id="nav-page1" class="nav-link active py-2">หน้าหลัก</button>
-                    <button onclick="showPage('page2')" id="nav-page2" class="nav-link py-2">ม.6</button>
-                    <button onclick="showPage('page3')" id="nav-page3" class="nav-link py-2">ม.4 (เข้มข้น)</button>
-                    <button onclick="showPage('page4')" id="nav-page4" class="nav-link py-2">งานวิจัย</button>
-                    <button onclick="showPage('page5')" id="nav-page5" class="nav-link py-2">นวัตกรรม</button>
-                    <button onclick="showPage('page6')" id="nav-page6" class="nav-link py-2">ผลงาน</button>
-                    <button onclick="showPage('page7')" id="nav-page7" class="nav-link py-2">บทความ</button>
-                    <button onclick="showPage('page8')" id="nav-page8" class="nav-link py-2">ประวัติ</button>
+                <div class="hidden lg:flex space-x-6 text-[15px]">
+                    <button onclick="showPage('page1')" id="nav-page1" class="nav-link active py-2"><i class="fas fa-home mr-1"></i>หน้าหลัก</button>
+                    <button onclick="showPage('page2')" id="nav-page2" class="nav-link py-2"><i class="fas fa-microscope mr-1"></i>ม.6</button>
+                    <button onclick="showPage('page3')" id="nav-page3" class="nav-link py-2"><i class="fas fa-dna mr-1"></i>ม.4 (เข้มข้น)</button>
+                    <button onclick="showPage('page4')" id="nav-page4" class="nav-link py-2"><i class="fas fa-flask mr-1"></i>งานวิจัย</button>
+                    <button onclick="showPage('page5')" id="nav-page5" class="nav-link py-2"><i class="fas fa-vr-cardboard mr-1"></i>นวัตกรรม</button>
+                    <button onclick="showPage('page6')" id="nav-page6" class="nav-link py-2"><i class="fas fa-trophy mr-1"></i>ผลงาน</button>
+                    <button onclick="showPage('page7')" id="nav-page7" class="nav-link py-2"><i class="fas fa-newspaper mr-1"></i>บทความ</button>
+                    <button onclick="showPage('page8')" id="nav-page8" class="nav-link py-2"><i class="fas fa-user-tie mr-1"></i>ประวัติ</button>
                 </div>
             </div>
         </div>
     </nav>
 
     <!-- Main Content -->
-    <main class="flex-grow max-w-6xl mx-auto px-4 py-10 w-full">
+    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 py-12 w-full">
 
         <!-- ================= PAGE 1 : หน้าหลัก ================= -->
         <section id="page1" class="page-section active">
             <!-- Hero -->
-            <div class="minimal-card p-10 md:p-16 text-center mb-10 relative overflow-hidden bg-white">
-                <img src="https://drive.google.com/thumbnail?id=1J57aSX6-5shwyPAcfTuDTRzdVZGxNPYM&sz=w400" alt="Profile" class="w-32 h-32 mx-auto rounded-full shadow-md mb-6 object-cover border-4 border-white">
-                <h1 class="text-4xl md:text-5xl font-bold text-gray-800 mb-4 tracking-tight">ยินดีต้อนรับสู่ ครูชีวะ 101</h1>
-                <p class="text-lg text-gray-500 mb-8 max-w-2xl mx-auto font-light">
-                    แหล่งรวมสื่อการเรียนการสอน นวัตกรรม และผลงานทางวิชาการด้านชีววิทยา ออกแบบมาเพื่อการเรียนรู้ที่เข้าใจง่ายและเป็นกันเอง
-                </p>
-                <a href="https://www.facebook.com/people/%E0%B8%84%E0%B8%A3%E0%B8%B9%E0%B8%8A%E0%B8%B5%E0%B8%A7%E0%B8%B0-101/61572701379470/" target="_blank" class="inline-flex items-center px-8 py-3 bg-primary hover:bg-emerald-600 text-white font-medium rounded-full transition shadow-md hover:shadow-lg">
-                    <i class="fab fa-facebook mr-2 text-lg"></i> ติดตามเพจของฉัน
-                </a>
+            <div class="glass-card p-10 md:p-20 text-center mb-12 relative" data-aos="zoom-in" data-aos-duration="1000">
+                <div class="relative w-40 h-40 mx-auto mb-8 animate-float">
+                    <img src="https://drive.google.com/thumbnail?id=1J57aSX6-5shwyPAcfTuDTRzdVZGxNPYM&sz=w400" alt="Profile" class="relative w-full h-full rounded-full object-cover border-[6px] border-white shadow-2xl z-10">
+                    <div class="absolute inset-0 rounded-full border-4 border-emerald-400 blur-sm opacity-50 animate-pulse"></div>
+                </div>
+                
+                <h1 class="text-5xl md:text-6xl font-extrabold mb-4 text-gradient pb-2">ครูชีวะ 101</h1>
+                
+                <!-- Typing Effect -->
+                <div class="text-xl md:text-2xl text-gray-600 mb-10 h-8 font-medium">
+                    <span id="typed-text"></span>
+                </div>
+                
+                <div class="flex justify-center gap-5 flex-wrap">
+                    <a href="https://www.facebook.com/people/%E0%B8%84%E0%B8%A3%E0%B8%B9%E0%B8%8A%E0%B8%B5%E0%B8%A7%E0%B8%B0-101/61572701379470/" target="_blank" class="group relative px-8 py-4 bg-gradient-to-r from-blue-500 to-blue-600 text-white font-bold rounded-full shadow-lg hover:shadow-blue-500/40 hover:-translate-y-1 transition-all overflow-hidden">
+                        <div class="absolute inset-0 bg-white/20 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
+                        <i class="fab fa-facebook mr-2 text-xl"></i> ติดตามเพจ Facebook
+                    </a>
+                </div>
             </div>
 
-            <!-- Grid Categories -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                <div onclick="showPage('page2')" class="minimal-card p-6 cursor-pointer text-center group">
-                    <div class="w-14 h-14 bg-emerald-50 text-emerald-500 rounded-2xl flex items-center justify-center mx-auto mb-4 text-2xl group-hover:bg-emerald-500 group-hover:text-white transition-colors"><i class="fas fa-microscope"></i></div>
-                    <h3 class="text-xl font-bold mb-2 text-gray-800">สื่อการเรียน ม.6</h3>
+            <!-- Grid Categories (3D Tilt Cards) -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div onclick="showPage('page2')" class="glass-card p-8 cursor-pointer text-center group" data-tilt data-tilt-max="15" data-tilt-speed="400" data-tilt-glare data-tilt-max-glare="0.3" data-aos="fade-up" data-aos-delay="100">
+                    <div class="w-20 h-20 bg-gradient-to-br from-emerald-100 to-emerald-50 text-emerald-500 rounded-3xl flex items-center justify-center mx-auto mb-6 text-4xl shadow-inner group-hover:scale-110 group-hover:rotate-6 transition-transform duration-300"><i class="fas fa-microscope"></i></div>
+                    <h3 class="text-2xl font-bold mb-2 text-gray-800">สื่อการเรียน ม.6</h3>
                     <p class="text-gray-500 text-sm">VDO การสอนและใบความรู้ ภาคเรียนที่ 1</p>
                 </div>
-                <div onclick="showPage('page3')" class="minimal-card p-6 cursor-pointer text-center group">
-                    <div class="w-14 h-14 bg-teal-50 text-teal-500 rounded-2xl flex items-center justify-center mx-auto mb-4 text-2xl group-hover:bg-teal-500 group-hover:text-white transition-colors"><i class="fas fa-dna"></i></div>
-                    <h3 class="text-xl font-bold mb-2 text-gray-800">สื่อการเรียน ม.4</h3>
+                
+                <div onclick="showPage('page3')" class="glass-card p-8 cursor-pointer text-center group" data-tilt data-tilt-max="15" data-tilt-speed="400" data-tilt-glare data-tilt-max-glare="0.3" data-aos="fade-up" data-aos-delay="200">
+                    <div class="w-20 h-20 bg-gradient-to-br from-teal-100 to-teal-50 text-teal-500 rounded-3xl flex items-center justify-center mx-auto mb-6 text-4xl shadow-inner group-hover:scale-110 group-hover:-rotate-6 transition-transform duration-300"><i class="fas fa-dna"></i></div>
+                    <h3 class="text-2xl font-bold mb-2 text-gray-800">สื่อการเรียน ม.4</h3>
                     <p class="text-gray-500 text-sm">ชีววิทยาเข้มข้น VDO และเอกสารประกอบการสอน</p>
                 </div>
-                <div onclick="showPage('page4')" class="minimal-card p-6 cursor-pointer text-center group">
-                    <div class="w-14 h-14 bg-blue-50 text-blue-500 rounded-2xl flex items-center justify-center mx-auto mb-4 text-2xl group-hover:bg-blue-500 group-hover:text-white transition-colors"><i class="fas fa-flask"></i></div>
-                    <h3 class="text-xl font-bold mb-2 text-gray-800">งานวิจัย</h3>
+                
+                <div onclick="showPage('page4')" class="glass-card p-8 cursor-pointer text-center group" data-tilt data-tilt-max="15" data-tilt-speed="400" data-tilt-glare data-tilt-max-glare="0.3" data-aos="fade-up" data-aos-delay="300">
+                    <div class="w-20 h-20 bg-gradient-to-br from-blue-100 to-blue-50 text-blue-500 rounded-3xl flex items-center justify-center mx-auto mb-6 text-4xl shadow-inner group-hover:scale-110 group-hover:rotate-6 transition-transform duration-300"><i class="fas fa-flask"></i></div>
+                    <h3 class="text-2xl font-bold mb-2 text-gray-800">งานวิจัย</h3>
                     <p class="text-gray-500 text-sm">Classroom Research & Study</p>
                 </div>
-                <div onclick="showPage('page5')" class="minimal-card p-6 cursor-pointer text-center group">
-                    <div class="w-14 h-14 bg-purple-50 text-purple-500 rounded-2xl flex items-center justify-center mx-auto mb-4 text-2xl group-hover:bg-purple-500 group-hover:text-white transition-colors"><i class="fas fa-vr-cardboard"></i></div>
-                    <h3 class="text-xl font-bold mb-2 text-gray-800">นวัตกรรม</h3>
+                
+                <div onclick="showPage('page5')" class="glass-card p-8 cursor-pointer text-center group" data-tilt data-tilt-max="15" data-tilt-speed="400" data-tilt-glare data-tilt-max-glare="0.3" data-aos="fade-up" data-aos-delay="400">
+                    <div class="w-20 h-20 bg-gradient-to-br from-purple-100 to-purple-50 text-purple-500 rounded-3xl flex items-center justify-center mx-auto mb-6 text-4xl shadow-inner group-hover:scale-110 group-hover:-rotate-6 transition-transform duration-300"><i class="fas fa-vr-cardboard"></i></div>
+                    <h3 class="text-2xl font-bold mb-2 text-gray-800">นวัตกรรม</h3>
                     <p class="text-gray-500 text-sm">AR Application และ PC Game สำหรับการเรียน</p>
                 </div>
-                <div onclick="showPage('page6')" class="minimal-card p-6 cursor-pointer text-center group">
-                    <div class="w-14 h-14 bg-yellow-50 text-yellow-500 rounded-2xl flex items-center justify-center mx-auto mb-4 text-2xl group-hover:bg-yellow-500 group-hover:text-white transition-colors"><i class="fas fa-trophy"></i></div>
-                    <h3 class="text-xl font-bold mb-2 text-gray-800">ผลงาน</h3>
+                
+                <div onclick="showPage('page6')" class="glass-card p-8 cursor-pointer text-center group" data-tilt data-tilt-max="15" data-tilt-speed="400" data-tilt-glare data-tilt-max-glare="0.3" data-aos="fade-up" data-aos-delay="500">
+                    <div class="w-20 h-20 bg-gradient-to-br from-yellow-100 to-yellow-50 text-yellow-500 rounded-3xl flex items-center justify-center mx-auto mb-6 text-4xl shadow-inner group-hover:scale-110 group-hover:rotate-6 transition-transform duration-300"><i class="fas fa-trophy"></i></div>
+                    <h3 class="text-2xl font-bold mb-2 text-gray-800">ผลงาน</h3>
                     <p class="text-gray-500 text-sm">ความสำเร็จและรางวัลที่ได้รับ (2562-2568)</p>
                 </div>
-                <div onclick="showPage('page7')" class="minimal-card p-6 cursor-pointer text-center group">
-                    <div class="w-14 h-14 bg-rose-50 text-rose-500 rounded-2xl flex items-center justify-center mx-auto mb-4 text-2xl group-hover:bg-rose-500 group-hover:text-white transition-colors"><i class="fas fa-newspaper"></i></div>
-                    <h3 class="text-xl font-bold mb-2 text-gray-800">บทความ</h3>
+                
+                <div onclick="showPage('page7')" class="glass-card p-8 cursor-pointer text-center group" data-tilt data-tilt-max="15" data-tilt-speed="400" data-tilt-glare data-tilt-max-glare="0.3" data-aos="fade-up" data-aos-delay="600">
+                    <div class="w-20 h-20 bg-gradient-to-br from-rose-100 to-rose-50 text-rose-500 rounded-3xl flex items-center justify-center mx-auto mb-6 text-4xl shadow-inner group-hover:scale-110 group-hover:-rotate-6 transition-transform duration-300"><i class="fas fa-newspaper"></i></div>
+                    <h3 class="text-2xl font-bold mb-2 text-gray-800">บทความ</h3>
                     <p class="text-gray-500 text-sm">บทความวิชาการและไอเดียการสอน</p>
                 </div>
             </div>
@@ -162,60 +215,63 @@
 
         <!-- ================= PAGE 2 : ม.6 ================= -->
         <section id="page2" class="page-section">
-            <div class="minimal-card p-8 md:p-12 border-t-4 border-emerald-500">
-                <h2 class="text-3xl font-bold text-gray-800 mb-8 pb-4 border-b border-gray-100 flex items-center">
-                    <i class="fas fa-microscope text-emerald-500 mr-3"></i> สื่อการเรียนชีววิทยา ม. 6 <span class="text-lg font-normal text-gray-400 ml-3">ภาคเรียนที่ 1</span>
-                </h2>
+            <div class="glass-card p-8 md:p-12 border-t-[6px] border-emerald-500">
+                <div data-aos="fade-right">
+                    <h2 class="text-4xl font-bold text-gray-800 mb-10 pb-4 border-b border-gray-200 flex items-center">
+                        <div class="w-16 h-16 bg-emerald-100 text-emerald-500 rounded-2xl flex items-center justify-center mr-4 shadow-sm"><i class="fas fa-microscope text-3xl"></i></div>
+                        สื่อการเรียนชีววิทยา ม. 6 <span class="text-xl font-normal bg-gray-100 text-gray-500 px-4 py-1 rounded-full ml-4 shadow-inner">ภาคเรียนที่ 1</span>
+                    </h2>
+                </div>
                 
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
                     <!-- VDO -->
-                    <div>
-                        <h3 class="text-xl font-bold mb-5 flex items-center text-gray-700"><i class="fab fa-youtube text-red-500 mr-2 text-2xl"></i> VDO การสอนชีววิทยา</h3>
-                        <div class="bg-gray-50 rounded-xl p-5 border border-gray-100">
+                    <div data-aos="fade-up" data-aos-delay="100">
+                        <h3 class="text-2xl font-bold mb-6 flex items-center text-gray-800"><i class="fab fa-youtube text-red-500 mr-3 text-3xl animate-pulse"></i> VDO การสอนชีววิทยา</h3>
+                        <div class="bg-white/60 rounded-2xl p-6 border border-white shadow-sm">
                             <ul class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
-                                <li><a href="https://youtu.be/Nclti0ZlTqM" target="_blank" class="flex items-center hover:text-red-500 transition"><i class="fas fa-play text-red-400 mr-2 w-4"></i> ตอนที่ 1</a></li>
-                                <li><a href="https://youtu.be/kXfqU2PpQzc" target="_blank" class="flex items-center hover:text-red-500 transition"><i class="fas fa-play text-red-400 mr-2 w-4"></i> ตอนที่ 2</a></li>
-                                <li><a href="https://youtu.be/Yd75INrq7Wo" target="_blank" class="flex items-center hover:text-red-500 transition"><i class="fas fa-play text-red-400 mr-2 w-4"></i> ตอนที่ 3</a></li>
-                                <li><a href="https://youtu.be/c7POhO6T4Qc" target="_blank" class="flex items-center hover:text-red-500 transition"><i class="fas fa-play text-red-400 mr-2 w-4"></i> ตอนที่ 4</a></li>
-                                <li><a href="https://youtu.be/4ELF7n64P5k" target="_blank" class="flex items-center hover:text-red-500 transition"><i class="fas fa-play text-red-400 mr-2 w-4"></i> ตอนที่ 5</a></li>
-                                <li><a href="https://youtu.be/gqymROT2eFU" target="_blank" class="flex items-center hover:text-red-500 transition"><i class="fas fa-play text-red-400 mr-2 w-4"></i> ตอนที่ 6</a></li>
-                                <li><a href="https://youtu.be/0JIKPPpV9WU" target="_blank" class="flex items-center hover:text-red-500 transition"><i class="fas fa-play text-red-400 mr-2 w-4"></i> ตอนที่ 7</a></li>
-                                <li><a href="https://youtu.be/pcZoHL_-6Ho" target="_blank" class="flex items-center hover:text-red-500 transition"><i class="fas fa-play text-red-400 mr-2 w-4"></i> ตอนที่ 8</a></li>
-                                <li><a href="https://youtu.be/FZ3_XbmNQmQ" target="_blank" class="flex items-center hover:text-red-500 transition"><i class="fas fa-play text-red-400 mr-2 w-4"></i> ตอนที่ 9</a></li>
-                                <li><a href="https://youtu.be/0vhXogdLsVk" target="_blank" class="flex items-center hover:text-red-500 transition"><i class="fas fa-play text-red-400 mr-2 w-4"></i> ตอนที่ 10</a></li>
-                                <li><a href="https://youtu.be/Ebov09Z8xcg" target="_blank" class="flex items-center hover:text-red-500 transition"><i class="fas fa-play text-red-400 mr-2 w-4"></i> ตอนที่ 11</a></li>
-                                <li><a href="https://youtu.be/PRDm4utWdo4" target="_blank" class="flex items-center hover:text-red-500 transition"><i class="fas fa-play text-red-400 mr-2 w-4"></i> ตอนที่ 12</a></li>
-                                <li><a href="https://youtu.be/S3bhWBzaCmA" target="_blank" class="flex items-center hover:text-red-500 transition"><i class="fas fa-play text-red-400 mr-2 w-4"></i> ตอนที่ 13</a></li>
-                                <li><a href="https://youtu.be/vvCV57UN07Q" target="_blank" class="flex items-center hover:text-red-500 transition"><i class="fas fa-play text-red-400 mr-2 w-4"></i> ตอนที่ 14</a></li>
+                                <li><a href="https://youtu.be/Nclti0ZlTqM" target="_blank" class="fancy-item block p-3 bg-white rounded-xl shadow-sm border border-gray-50 font-medium"><i class="fas fa-play-circle text-red-400 mr-2"></i> ตอนที่ 1</a></li>
+                                <li><a href="https://youtu.be/kXfqU2PpQzc" target="_blank" class="fancy-item block p-3 bg-white rounded-xl shadow-sm border border-gray-50 font-medium"><i class="fas fa-play-circle text-red-400 mr-2"></i> ตอนที่ 2</a></li>
+                                <li><a href="https://youtu.be/Yd75INrq7Wo" target="_blank" class="fancy-item block p-3 bg-white rounded-xl shadow-sm border border-gray-50 font-medium"><i class="fas fa-play-circle text-red-400 mr-2"></i> ตอนที่ 3</a></li>
+                                <li><a href="https://youtu.be/c7POhO6T4Qc" target="_blank" class="fancy-item block p-3 bg-white rounded-xl shadow-sm border border-gray-50 font-medium"><i class="fas fa-play-circle text-red-400 mr-2"></i> ตอนที่ 4</a></li>
+                                <li><a href="https://youtu.be/4ELF7n64P5k" target="_blank" class="fancy-item block p-3 bg-white rounded-xl shadow-sm border border-gray-50 font-medium"><i class="fas fa-play-circle text-red-400 mr-2"></i> ตอนที่ 5</a></li>
+                                <li><a href="https://youtu.be/gqymROT2eFU" target="_blank" class="fancy-item block p-3 bg-white rounded-xl shadow-sm border border-gray-50 font-medium"><i class="fas fa-play-circle text-red-400 mr-2"></i> ตอนที่ 6</a></li>
+                                <li><a href="https://youtu.be/0JIKPPpV9WU" target="_blank" class="fancy-item block p-3 bg-white rounded-xl shadow-sm border border-gray-50 font-medium"><i class="fas fa-play-circle text-red-400 mr-2"></i> ตอนที่ 7</a></li>
+                                <li><a href="https://youtu.be/pcZoHL_-6Ho" target="_blank" class="fancy-item block p-3 bg-white rounded-xl shadow-sm border border-gray-50 font-medium"><i class="fas fa-play-circle text-red-400 mr-2"></i> ตอนที่ 8</a></li>
+                                <li><a href="https://youtu.be/FZ3_XbmNQmQ" target="_blank" class="fancy-item block p-3 bg-white rounded-xl shadow-sm border border-gray-50 font-medium"><i class="fas fa-play-circle text-red-400 mr-2"></i> ตอนที่ 9</a></li>
+                                <li><a href="https://youtu.be/0vhXogdLsVk" target="_blank" class="fancy-item block p-3 bg-white rounded-xl shadow-sm border border-gray-50 font-medium"><i class="fas fa-play-circle text-red-400 mr-2"></i> ตอนที่ 10</a></li>
+                                <li><a href="https://youtu.be/Ebov09Z8xcg" target="_blank" class="fancy-item block p-3 bg-white rounded-xl shadow-sm border border-gray-50 font-medium"><i class="fas fa-play-circle text-red-400 mr-2"></i> ตอนที่ 11</a></li>
+                                <li><a href="https://youtu.be/PRDm4utWdo4" target="_blank" class="fancy-item block p-3 bg-white rounded-xl shadow-sm border border-gray-50 font-medium"><i class="fas fa-play-circle text-red-400 mr-2"></i> ตอนที่ 12</a></li>
+                                <li><a href="https://youtu.be/S3bhWBzaCmA" target="_blank" class="fancy-item block p-3 bg-white rounded-xl shadow-sm border border-gray-50 font-medium"><i class="fas fa-play-circle text-red-400 mr-2"></i> ตอนที่ 13</a></li>
+                                <li><a href="https://youtu.be/vvCV57UN07Q" target="_blank" class="fancy-item block p-3 bg-white rounded-xl shadow-sm border border-gray-50 font-medium"><i class="fas fa-play-circle text-red-400 mr-2"></i> ตอนที่ 14</a></li>
                             </ul>
                         </div>
                     </div>
 
                     <!-- PPT & Docs -->
-                    <div>
-                        <h3 class="text-xl font-bold mb-5 flex items-center text-gray-700"><i class="fas fa-file-pdf text-orange-500 mr-2 text-2xl"></i> สื่อการสอน PowerPoint & ใบความรู้</h3>
-                        <div class="bg-gray-50 rounded-xl p-5 border border-gray-100 mb-4">
-                            <ul class="space-y-3 text-sm">
-                                <li><a href="https://drive.google.com/file/d/15OX-n9rwcyeO4OpaxXbkvzErM7NfxaMU/view" target="_blank" class="flex items-start hover:text-emerald-600 transition"><i class="far fa-file-alt text-gray-400 mt-1 mr-2 w-4"></i> 1.1 เซลล์ประสาท</a></li>
-                                <li><a href="https://drive.google.com/file/d/1EeaKryRFWxVWjjASOu2H88q7C515C8yA/view" target="_blank" class="flex items-start hover:text-emerald-600 transition"><i class="far fa-file-alt text-gray-400 mt-1 mr-2 w-4"></i> 1.2 กระแสประสาท</a></li>
-                                <li><a href="https://drive.google.com/file/d/16lUtvtkHab34EwcOwDoZ2Zhl4b3Qjedx/view" target="_blank" class="flex items-start hover:text-emerald-600 transition"><i class="far fa-file-alt text-gray-400 mt-1 mr-2 w-4"></i> 1.3 การส่งกระแสประสาท</a></li>
-                                <li><a href="https://drive.google.com/file/d/1DE4NW4KEyzMWB0jo3SgS-Y2Kw9sGvd9_/view" target="_blank" class="flex items-start hover:text-emerald-600 transition"><i class="far fa-file-alt text-gray-400 mt-1 mr-2 w-4"></i> 1.4 ระบบประสาทของสัตว์</a></li>
-                                <li><a href="https://drive.google.com/file/d/1nTIyGzT-QyTa2UP0mUmoi02Zy14JG__4/view" target="_blank" class="flex items-start hover:text-emerald-600 transition"><i class="far fa-file-alt text-gray-400 mt-1 mr-2 w-4"></i> 1.5 ระบบประสาทส่วนกลาง</a></li>
-                                <li><a href="https://drive.google.com/file/d/17Wc5rdZbEPSxwfPmXcaFRCdvpVGKV1_V/view" target="_blank" class="flex items-start hover:text-emerald-600 transition"><i class="far fa-file-alt text-gray-400 mt-1 mr-2 w-4"></i> 1.6 ระบบประสาทรอบนอก</a></li>
-                                <li><a href="https://drive.google.com/file/d/1tfyM4kmG2ehnrIA7QTVPOYZgpChG6Emx/view" target="_blank" class="flex items-start hover:text-emerald-600 transition"><i class="far fa-file-alt text-gray-400 mt-1 mr-2 w-4"></i> 1.7 อวัยวะรับความรู้สึก</a></li>
-                                <li><a href="https://drive.google.com/file/d/1zjhvh6FQ7ipYV10B9kqdLX8qAChlVcGR/view" target="_blank" class="flex items-start hover:text-emerald-600 transition"><i class="far fa-file-alt text-gray-400 mt-1 mr-2 w-4"></i> 1.8 การติดต่อสื่อสารระหว่างเซลล์</a></li>
-                                <li><a href="https://drive.google.com/file/d/1PbN0PRSS-FHDu9gOpH_Ot5mKEBQJpJkL/view" target="_blank" class="flex items-start hover:text-emerald-600 transition"><i class="far fa-file-alt text-gray-400 mt-1 mr-2 w-4"></i> 1.9 ต่อมใต้สมอง</a></li>
-                                <li><a href="https://drive.google.com/file/d/1v-Wb84qphNmlMjqVhIWL7mzwTDeTTryr/view" target="_blank" class="flex items-start hover:text-emerald-600 transition"><i class="far fa-file-alt text-gray-400 mt-1 mr-2 w-4"></i> 1.10 ต่อไร้ท่ออื่น ๆ</a></li>
-                                <li><a href="https://drive.google.com/file/d/1yKXbwzHVeD4CwP_rGr2_CbbeGCl8Pqai/view" target="_blank" class="flex items-start hover:text-emerald-600 transition"><i class="far fa-file-alt text-gray-400 mt-1 mr-2 w-4"></i> 1.11 การเคลื่อนไหวของสิ่งมีชีวิตเซลล์เดียวและสัตว์ไม่มีกระดูกสันหลัง</a></li>
-                                <li><a href="https://drive.google.com/file/d/18gV4KZVuz6JNFM9swf6p1KN2yIenAnmv/view" target="_blank" class="flex items-start hover:text-emerald-600 transition"><i class="far fa-file-alt text-gray-400 mt-1 mr-2 w-4"></i> 1.12 การเคลื่อนไหวของสัตว์มีกระดูกสันหลัง</a></li>
-                                <li><a href="https://drive.google.com/file/d/19AOvEFmjOn_4lFBf2UgEHSIKIHz3wwmd/view" target="_blank" class="flex items-start hover:text-emerald-600 transition"><i class="far fa-file-alt text-gray-400 mt-1 mr-2 w-4"></i> 1.13 ระบบกล้ามเนื้อ</a></li>
-                                <li><a href="https://drive.google.com/file/d/1ERMYk0LqZ6wmJRQufRFjw8KdfaFKU3SX/view" target="_blank" class="flex items-start hover:text-emerald-600 transition"><i class="far fa-file-alt text-gray-400 mt-1 mr-2 w-4"></i> 1.14 ระบบสืบพันธุ์และการเจริญของตัวอ่อน</a></li>
-                                <li><a href="https://drive.google.com/file/d/1HuItkZ61iIEvLs-miCTawCTHV6NySSH9/view" target="_blank" class="flex items-start hover:text-emerald-600 transition"><i class="far fa-file-alt text-gray-400 mt-1 mr-2 w-4"></i> 1.15 โครงสร้างที่อยู่รอบตัวอ่อน</a></li>
-                                <li><a href="https://drive.google.com/file/d/1viTQEAjMkNfGQ_guBDa5IEGDIoDP0ds2/view" target="_blank" class="flex items-start hover:text-emerald-600 transition"><i class="far fa-file-alt text-gray-400 mt-1 mr-2 w-4"></i> 1.16 พฤติกรรมสัตว์</a></li>
+                    <div data-aos="fade-up" data-aos-delay="200">
+                        <h3 class="text-2xl font-bold mb-6 flex items-center text-gray-800"><i class="fas fa-file-pdf text-orange-500 mr-3 text-3xl"></i> PowerPoint & ใบความรู้</h3>
+                        <div class="bg-white/60 rounded-2xl p-6 border border-white shadow-sm mb-5">
+                            <ul class="space-y-2 text-sm max-h-[400px] overflow-y-auto pr-2">
+                                <li><a href="https://drive.google.com/file/d/15OX-n9rwcyeO4OpaxXbkvzErM7NfxaMU/view" target="_blank" class="fancy-item block p-2 bg-white rounded-lg shadow-sm"><i class="far fa-file-alt text-emerald-500 mr-2 w-4"></i> 1.1 เซลล์ประสาท</a></li>
+                                <li><a href="https://drive.google.com/file/d/1EeaKryRFWxVWjjASOu2H88q7C515C8yA/view" target="_blank" class="fancy-item block p-2 bg-white rounded-lg shadow-sm"><i class="far fa-file-alt text-emerald-500 mr-2 w-4"></i> 1.2 กระแสประสาท</a></li>
+                                <li><a href="https://drive.google.com/file/d/16lUtvtkHab34EwcOwDoZ2Zhl4b3Qjedx/view" target="_blank" class="fancy-item block p-2 bg-white rounded-lg shadow-sm"><i class="far fa-file-alt text-emerald-500 mr-2 w-4"></i> 1.3 การส่งกระแสประสาท</a></li>
+                                <li><a href="https://drive.google.com/file/d/1DE4NW4KEyzMWB0jo3SgS-Y2Kw9sGvd9_/view" target="_blank" class="fancy-item block p-2 bg-white rounded-lg shadow-sm"><i class="far fa-file-alt text-emerald-500 mr-2 w-4"></i> 1.4 ระบบประสาทของสัตว์</a></li>
+                                <li><a href="https://drive.google.com/file/d/1nTIyGzT-QyTa2UP0mUmoi02Zy14JG__4/view" target="_blank" class="fancy-item block p-2 bg-white rounded-lg shadow-sm"><i class="far fa-file-alt text-emerald-500 mr-2 w-4"></i> 1.5 ระบบประสาทส่วนกลาง</a></li>
+                                <li><a href="https://drive.google.com/file/d/17Wc5rdZbEPSxwfPmXcaFRCdvpVGKV1_V/view" target="_blank" class="fancy-item block p-2 bg-white rounded-lg shadow-sm"><i class="far fa-file-alt text-emerald-500 mr-2 w-4"></i> 1.6 ระบบประสาทรอบนอก</a></li>
+                                <li><a href="https://drive.google.com/file/d/1tfyM4kmG2ehnrIA7QTVPOYZgpChG6Emx/view" target="_blank" class="fancy-item block p-2 bg-white rounded-lg shadow-sm"><i class="far fa-file-alt text-emerald-500 mr-2 w-4"></i> 1.7 อวัยวะรับความรู้สึก</a></li>
+                                <li><a href="https://drive.google.com/file/d/1zjhvh6FQ7ipYV10B9kqdLX8qAChlVcGR/view" target="_blank" class="fancy-item block p-2 bg-white rounded-lg shadow-sm"><i class="far fa-file-alt text-emerald-500 mr-2 w-4"></i> 1.8 การติดต่อสื่อสารระหว่างเซลล์</a></li>
+                                <li><a href="https://drive.google.com/file/d/1PbN0PRSS-FHDu9gOpH_Ot5mKEBQJpJkL/view" target="_blank" class="fancy-item block p-2 bg-white rounded-lg shadow-sm"><i class="far fa-file-alt text-emerald-500 mr-2 w-4"></i> 1.9 ต่อมใต้สมอง</a></li>
+                                <li><a href="https://drive.google.com/file/d/1v-Wb84qphNmlMjqVhIWL7mzwTDeTTryr/view" target="_blank" class="fancy-item block p-2 bg-white rounded-lg shadow-sm"><i class="far fa-file-alt text-emerald-500 mr-2 w-4"></i> 1.10 ต่อไร้ท่ออื่น ๆ</a></li>
+                                <li><a href="https://drive.google.com/file/d/1yKXbwzHVeD4CwP_rGr2_CbbeGCl8Pqai/view" target="_blank" class="fancy-item block p-2 bg-white rounded-lg shadow-sm"><i class="far fa-file-alt text-emerald-500 mr-2 w-4"></i> 1.11 การเคลื่อนไหวของสิ่งมีชีวิตเซลล์เดียวฯ</a></li>
+                                <li><a href="https://drive.google.com/file/d/18gV4KZVuz6JNFM9swf6p1KN2yIenAnmv/view" target="_blank" class="fancy-item block p-2 bg-white rounded-lg shadow-sm"><i class="far fa-file-alt text-emerald-500 mr-2 w-4"></i> 1.12 การเคลื่อนไหวของสัตว์มีกระดูกสันหลัง</a></li>
+                                <li><a href="https://drive.google.com/file/d/19AOvEFmjOn_4lFBf2UgEHSIKIHz3wwmd/view" target="_blank" class="fancy-item block p-2 bg-white rounded-lg shadow-sm"><i class="far fa-file-alt text-emerald-500 mr-2 w-4"></i> 1.13 ระบบกล้ามเนื้อ</a></li>
+                                <li><a href="https://drive.google.com/file/d/1ERMYk0LqZ6wmJRQufRFjw8KdfaFKU3SX/view" target="_blank" class="fancy-item block p-2 bg-white rounded-lg shadow-sm"><i class="far fa-file-alt text-emerald-500 mr-2 w-4"></i> 1.14 ระบบสืบพันธุ์และการเจริญของตัวอ่อน</a></li>
+                                <li><a href="https://drive.google.com/file/d/1HuItkZ61iIEvLs-miCTawCTHV6NySSH9/view" target="_blank" class="fancy-item block p-2 bg-white rounded-lg shadow-sm"><i class="far fa-file-alt text-emerald-500 mr-2 w-4"></i> 1.15 โครงสร้างที่อยู่รอบตัวอ่อน</a></li>
+                                <li><a href="https://drive.google.com/file/d/1viTQEAjMkNfGQ_guBDa5IEGDIoDP0ds2/view" target="_blank" class="fancy-item block p-2 bg-white rounded-lg shadow-sm"><i class="far fa-file-alt text-emerald-500 mr-2 w-4"></i> 1.16 พฤติกรรมสัตว์</a></li>
                             </ul>
                         </div>
-                        <a href="https://drive.google.com/drive/folders/1x5WbH45IFNw9NycP-6mRVbCEbXbXk563" target="_blank" class="block w-full py-3 bg-emerald-50 text-emerald-600 text-center rounded-xl font-medium hover:bg-emerald-100 transition border border-emerald-100">
-                            <i class="fas fa-folder-open mr-2"></i> สื่อ PowerPoint ทั้งหมด
+                        <a href="https://drive.google.com/drive/folders/1x5WbH45IFNw9NycP-6mRVbCEbXbXk563" target="_blank" class="flex justify-center items-center w-full py-4 bg-gradient-to-r from-emerald-400 to-emerald-500 text-white rounded-xl font-bold shadow-lg hover:shadow-emerald-500/40 hover:-translate-y-1 transition-all">
+                            <i class="fas fa-folder-open mr-2 text-xl"></i> เปิดคลังสื่อ PowerPoint ทั้งหมด
                         </a>
                     </div>
                 </div>
@@ -224,54 +280,61 @@
 
         <!-- ================= PAGE 3 : ม.4 ================= -->
         <section id="page3" class="page-section">
-            <div class="minimal-card p-8 md:p-12 border-t-4 border-teal-500">
-                <h2 class="text-3xl font-bold text-gray-800 mb-8 pb-4 border-b border-gray-100 flex items-center">
-                    <i class="fas fa-dna text-teal-500 mr-3"></i> สื่อการเรียนชีววิทยาเข้มข้น ม.4 <span class="text-lg font-normal text-gray-400 ml-3">ภาคเรียนที่ 1</span>
-                </h2>
+            <div class="glass-card p-8 md:p-12 border-t-[6px] border-teal-500">
+                <div data-aos="fade-right">
+                    <h2 class="text-4xl font-bold text-gray-800 mb-10 pb-4 border-b border-gray-200 flex items-center">
+                        <div class="w-16 h-16 bg-teal-100 text-teal-500 rounded-2xl flex items-center justify-center mr-4 shadow-sm"><i class="fas fa-dna text-3xl"></i></div>
+                        สื่อการเรียนชีววิทยา ม.4 <span class="text-xl font-normal bg-teal-50 text-teal-600 border border-teal-100 px-4 py-1 rounded-full ml-4 shadow-sm">เข้มข้น (ภาคเรียนที่ 1)</span>
+                    </h2>
+                </div>
                 
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
                     <!-- VDO -->
-                    <div>
-                        <h3 class="text-xl font-bold mb-5 flex items-center text-gray-700"><i class="fab fa-youtube text-red-500 mr-2 text-2xl"></i> VDO การสอนชีววิทยาเข้มข้น</h3>
-                        <div class="bg-gray-50 rounded-xl p-5 border border-gray-100">
+                    <div data-aos="fade-up" data-aos-delay="100">
+                        <h3 class="text-2xl font-bold mb-6 flex items-center text-gray-800"><i class="fab fa-youtube text-red-500 mr-3 text-3xl"></i> VDO การสอนชีววิทยาเข้มข้น</h3>
+                        <div class="bg-white/60 rounded-2xl p-6 border border-white shadow-sm">
                             <ul class="space-y-3 text-sm">
-                                <li><a href="https://youtu.be/Rwc-LHZC3dY" target="_blank" class="flex items-center hover:text-red-500 transition"><i class="fas fa-play text-red-400 mr-3 w-4"></i> 1.1 เคมีพื้นฐานของสิ่งมีชีวิต</a></li>
-                                <li><a href="https://youtu.be/LAtdXCUb2BA" target="_blank" class="flex items-center hover:text-red-500 transition"><i class="fas fa-play text-red-400 mr-3 w-4"></i> 1.2 เซลล์</a></li>
-                                <li><a href="https://youtu.be/I-WL6H1Wma0" target="_blank" class="flex items-center hover:text-red-500 transition"><i class="fas fa-play text-red-400 mr-3 w-4"></i> 1.3 การลำเลียงสารเข้าออกเซลล์</a></li>
-                                <li><a href="https://youtu.be/I-WL6H1Wma0" target="_blank" class="flex items-center hover:text-red-500 transition"><i class="fas fa-play text-red-400 mr-3 w-4"></i> 1.4 การหายใจระดับเซลล์</a></li>
-                                <li><a href="https://youtu.be/BKQqKHarTfo" target="_blank" class="flex items-center hover:text-red-500 transition"><i class="fas fa-play text-red-400 mr-3 w-4"></i> 1.5 การแบ่งเซลล์</a></li>
-                                <li><a href="https://youtu.be/Qqexd4Bk3GY" target="_blank" class="flex items-center hover:text-red-500 transition"><i class="fas fa-play text-red-400 mr-3 w-4"></i> 1.6 ระบบย่อยอาหาร</a></li>
-                                <li><a href="https://youtu.be/Qqexd4Bk3GY" target="_blank" class="flex items-center hover:text-red-500 transition"><i class="fas fa-play text-red-400 mr-3 w-4"></i> 1.7 ระบบหมุนเวียนโลหิต</a></li>
-                                <li><a href="https://youtu.be/REtYxXgS3Mg" target="_blank" class="flex items-center hover:text-red-500 transition"><i class="fas fa-play text-red-400 mr-3 w-4"></i> 1.8 ระบบแลกเปลี่ยนแก๊ส</a></li>
+                                <li><a href="https://youtu.be/Rwc-LHZC3dY" target="_blank" class="fancy-item flex items-center p-3 bg-white rounded-xl shadow-sm"><i class="fas fa-play text-red-400 mr-3 w-4"></i> <span class="font-medium">1.1 เคมีพื้นฐานของสิ่งมีชีวิต</span></a></li>
+                                <li><a href="https://youtu.be/LAtdXCUb2BA" target="_blank" class="fancy-item flex items-center p-3 bg-white rounded-xl shadow-sm"><i class="fas fa-play text-red-400 mr-3 w-4"></i> <span class="font-medium">1.2 เซลล์</span></a></li>
+                                <li><a href="https://youtu.be/I-WL6H1Wma0" target="_blank" class="fancy-item flex items-center p-3 bg-white rounded-xl shadow-sm"><i class="fas fa-play text-red-400 mr-3 w-4"></i> <span class="font-medium">1.3 การลำเลียงสารเข้าออกเซลล์</span></a></li>
+                                <li><a href="https://youtu.be/I-WL6H1Wma0" target="_blank" class="fancy-item flex items-center p-3 bg-white rounded-xl shadow-sm"><i class="fas fa-play text-red-400 mr-3 w-4"></i> <span class="font-medium">1.4 การหายใจระดับเซลล์</span></a></li>
+                                <li><a href="https://youtu.be/BKQqKHarTfo" target="_blank" class="fancy-item flex items-center p-3 bg-white rounded-xl shadow-sm"><i class="fas fa-play text-red-400 mr-3 w-4"></i> <span class="font-medium">1.5 การแบ่งเซลล์</span></a></li>
+                                <li><a href="https://youtu.be/Qqexd4Bk3GY" target="_blank" class="fancy-item flex items-center p-3 bg-white rounded-xl shadow-sm"><i class="fas fa-play text-red-400 mr-3 w-4"></i> <span class="font-medium">1.6 ระบบย่อยอาหาร</span></a></li>
+                                <li><a href="https://youtu.be/Qqexd4Bk3GY" target="_blank" class="fancy-item flex items-center p-3 bg-white rounded-xl shadow-sm"><i class="fas fa-play text-red-400 mr-3 w-4"></i> <span class="font-medium">1.7 ระบบหมุนเวียนโลหิต</span></a></li>
+                                <li><a href="https://youtu.be/REtYxXgS3Mg" target="_blank" class="fancy-item flex items-center p-3 bg-white rounded-xl shadow-sm"><i class="fas fa-play text-red-400 mr-3 w-4"></i> <span class="font-medium">1.8 ระบบแลกเปลี่ยนแก๊ส</span></a></li>
                             </ul>
                         </div>
                     </div>
 
-                    <!-- PPT & Docs -->
-                    <div>
-                        <h3 class="text-xl font-bold mb-5 flex items-center text-gray-700"><i class="fas fa-book-open text-blue-500 mr-2 text-2xl"></i> เอกสารประกอบการสอน</h3>
+                    <!-- Docs -->
+                    <div data-aos="fade-up" data-aos-delay="200">
+                        <h3 class="text-2xl font-bold mb-6 flex items-center text-gray-800"><i class="fas fa-book-open text-blue-500 mr-3 text-3xl"></i> เอกสารประกอบการสอน</h3>
                         
-                        <h4 class="font-semibold text-gray-600 mb-2 mt-4 ml-1">สื่อ PowerPoint</h4>
-                        <div class="grid grid-cols-2 gap-2 mb-5 text-sm">
-                            <a href="https://drive.google.com/file/d/1nwQ83fGfFJ-E44JhQntKhFtPoquEM7i9/view" target="_blank" class="bg-gray-50 p-2 rounded border border-gray-100 hover:bg-gray-100 transition flex items-center"><i class="fas fa-desktop text-blue-400 mr-2"></i> 2.1.1 แนะนำรายวิชา</a>
-                            <a href="https://drive.google.com/file/d/1uzf8VmYdINSBbPd1nIpZj2WsEfGDIbUK/view" target="_blank" class="bg-gray-50 p-2 rounded border border-gray-100 hover:bg-gray-100 transition flex items-center"><i class="fas fa-desktop text-blue-400 mr-2"></i> 2.1.2 เคมีพื้นฐานฯ</a>
-                            <a href="https://drive.google.com/file/d/1f-DAaL6X00i5IyzGPE46UmGyG3s3kJBL/view" target="_blank" class="bg-gray-50 p-2 rounded border border-gray-100 hover:bg-gray-100 transition flex items-center"><i class="fas fa-desktop text-blue-400 mr-2"></i> 2.1.3 เซลล์</a>
-                            <a href="https://drive.google.com/file/d/10zN3jX_UCIW9LV3JK9P9LMy-yUca9MMW/view" target="_blank" class="bg-gray-50 p-2 rounded border border-gray-100 hover:bg-gray-100 transition flex items-center"><i class="fas fa-desktop text-blue-400 mr-2"></i> 2.1.4 การลำเลียงสารฯ</a>
+                        <div class="mb-8">
+                            <h4 class="font-bold text-teal-600 mb-3 bg-teal-50 inline-block px-3 py-1 rounded-lg">สื่อ PowerPoint</h4>
+                            <div class="grid grid-cols-2 gap-3 text-sm">
+                                <a href="https://drive.google.com/file/d/1nwQ83fGfFJ-E44JhQntKhFtPoquEM7i9/view" target="_blank" class="fancy-item bg-white p-3 rounded-xl shadow-sm border border-gray-100 flex items-center font-medium"><i class="fas fa-desktop text-teal-400 mr-2"></i> 2.1.1 แนะนำรายวิชา</a>
+                                <a href="https://drive.google.com/file/d/1uzf8VmYdINSBbPd1nIpZj2WsEfGDIbUK/view" target="_blank" class="fancy-item bg-white p-3 rounded-xl shadow-sm border border-gray-100 flex items-center font-medium"><i class="fas fa-desktop text-teal-400 mr-2"></i> 2.1.2 เคมีพื้นฐานฯ</a>
+                                <a href="https://drive.google.com/file/d/1f-DAaL6X00i5IyzGPE46UmGyG3s3kJBL/view" target="_blank" class="fancy-item bg-white p-3 rounded-xl shadow-sm border border-gray-100 flex items-center font-medium"><i class="fas fa-desktop text-teal-400 mr-2"></i> 2.1.3 เซลล์</a>
+                                <a href="https://drive.google.com/file/d/10zN3jX_UCIW9LV3JK9P9LMy-yUca9MMW/view" target="_blank" class="fancy-item bg-white p-3 rounded-xl shadow-sm border border-gray-100 flex items-center font-medium"><i class="fas fa-desktop text-teal-400 mr-2"></i> 2.1.4 การลำเลียงสาร</a>
+                            </div>
                         </div>
 
-                        <h4 class="font-semibold text-gray-600 mb-2 ml-1">ใบความรู้</h4>
-                        <div class="bg-gray-50 rounded-xl p-4 border border-gray-100">
-                            <ul class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
-                                <li><a href="https://drive.google.com/file/d/19MNxeoZo0nQL7lL9OJKq-zJJxfH6yZqh/view" target="_blank" class="flex items-center hover:text-teal-600"><i class="far fa-file-alt text-gray-400 mr-2"></i> 2.2.1 เคมีพื้นฐานฯ</a></li>
-                                <li><a href="https://drive.google.com/file/d/1nZd1WzxD3YlAXh0nwhkPxyPaXJwSPkkr/view" target="_blank" class="flex items-center hover:text-teal-600"><i class="far fa-file-alt text-gray-400 mr-2"></i> 2.2.2 โครงสร้างเซลล์</a></li>
-                                <li><a href="https://drive.google.com/file/d/1WPypnz-kjXITKsC7fI36GPmraFHLV7EH/view" target="_blank" class="flex items-center hover:text-teal-600"><i class="far fa-file-alt text-gray-400 mr-2"></i> 2.2.3 การลำเลียงสาร</a></li>
-                                <li><a href="https://drive.google.com/file/d/1jK7Fzt0f_sFXTPvcaJd8GQCwaKWENW_J/view" target="_blank" class="flex items-center hover:text-teal-600"><i class="far fa-file-alt text-gray-400 mr-2"></i> 2.2.4 การหายใจฯ</a></li>
-                                <li><a href="https://drive.google.com/file/d/1kLkB9EUPAaCUk9eA2k80EZJbQFalx4DS/view" target="_blank" class="flex items-center hover:text-teal-600"><i class="far fa-file-alt text-gray-400 mr-2"></i> 2.2.5 การแบ่งเซลล์</a></li>
-                                <li><a href="https://drive.google.com/file/d/18R1ajj03UNQL2lLG54W_32T1xE0wHeQv/view" target="_blank" class="flex items-center hover:text-teal-600"><i class="far fa-file-alt text-gray-400 mr-2"></i> 2.2.6 ระบบย่อยอาหาร</a></li>
-                                <li><a href="https://drive.google.com/file/d/1DjMKKI5m5fPEvAV6FeyQIxQKEzesSi4N/view" target="_blank" class="flex items-center hover:text-teal-600"><i class="far fa-file-alt text-gray-400 mr-2"></i> 2.2.7 ระบบหมุนเวียนเลือด</a></li>
-                                <li><a href="https://drive.google.com/file/d/13CfBBTjNgzmYPdSWK9JCZb56QOqv9Eb3/view" target="_blank" class="flex items-center hover:text-teal-600"><i class="far fa-file-alt text-gray-400 mr-2"></i> 2.2.8 ระบบแลกเปลี่ยนแก๊ส</a></li>
-                                <li><a href="https://drive.google.com/file/d/1_MfDGbHmMa1-pZs2i0zQqU846mduOAXD/view" target="_blank" class="flex items-center hover:text-teal-600"><i class="far fa-file-alt text-gray-400 mr-2"></i> 2.2.9 ระบบประสาท</a></li>
-                            </ul>
+                        <div>
+                            <h4 class="font-bold text-blue-600 mb-3 bg-blue-50 inline-block px-3 py-1 rounded-lg">ใบความรู้</h4>
+                            <div class="bg-white/60 rounded-2xl p-5 border border-white shadow-sm">
+                                <ul class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+                                    <li><a href="https://drive.google.com/file/d/19MNxeoZo0nQL7lL9OJKq-zJJxfH6yZqh/view" target="_blank" class="fancy-item flex items-center bg-white p-2 rounded-lg shadow-sm"><i class="far fa-file-alt text-blue-400 mr-2"></i> 2.2.1 เคมีพื้นฐานฯ</a></li>
+                                    <li><a href="https://drive.google.com/file/d/1nZd1WzxD3YlAXh0nwhkPxyPaXJwSPkkr/view" target="_blank" class="fancy-item flex items-center bg-white p-2 rounded-lg shadow-sm"><i class="far fa-file-alt text-blue-400 mr-2"></i> 2.2.2 โครงสร้างเซลล์</a></li>
+                                    <li><a href="https://drive.google.com/file/d/1WPypnz-kjXITKsC7fI36GPmraFHLV7EH/view" target="_blank" class="fancy-item flex items-center bg-white p-2 rounded-lg shadow-sm"><i class="far fa-file-alt text-blue-400 mr-2"></i> 2.2.3 การลำเลียงสาร</a></li>
+                                    <li><a href="https://drive.google.com/file/d/1jK7Fzt0f_sFXTPvcaJd8GQCwaKWENW_J/view" target="_blank" class="fancy-item flex items-center bg-white p-2 rounded-lg shadow-sm"><i class="far fa-file-alt text-blue-400 mr-2"></i> 2.2.4 การหายใจระดับเซลล์</a></li>
+                                    <li><a href="https://drive.google.com/file/d/1kLkB9EUPAaCUk9eA2k80EZJbQFalx4DS/view" target="_blank" class="fancy-item flex items-center bg-white p-2 rounded-lg shadow-sm"><i class="far fa-file-alt text-blue-400 mr-2"></i> 2.2.5 การแบ่งเซลล์</a></li>
+                                    <li><a href="https://drive.google.com/file/d/18R1ajj03UNQL2lLG54W_32T1xE0wHeQv/view" target="_blank" class="fancy-item flex items-center bg-white p-2 rounded-lg shadow-sm"><i class="far fa-file-alt text-blue-400 mr-2"></i> 2.2.6 ระบบย่อยอาหาร</a></li>
+                                    <li><a href="https://drive.google.com/file/d/1DjMKKI5m5fPEvAV6FeyQIxQKEzesSi4N/view" target="_blank" class="fancy-item flex items-center bg-white p-2 rounded-lg shadow-sm"><i class="far fa-file-alt text-blue-400 mr-2"></i> 2.2.7 ระบบหมุนเวียนเลือด</a></li>
+                                    <li><a href="https://drive.google.com/file/d/13CfBBTjNgzmYPdSWK9JCZb56QOqv9Eb3/view" target="_blank" class="fancy-item flex items-center bg-white p-2 rounded-lg shadow-sm"><i class="far fa-file-alt text-blue-400 mr-2"></i> 2.2.8 ระบบแลกเปลี่ยนแก๊ส</a></li>
+                                    <li class="col-span-1 sm:col-span-2"><a href="https://drive.google.com/file/d/1_MfDGbHmMa1-pZs2i0zQqU846mduOAXD/view" target="_blank" class="fancy-item flex items-center bg-white p-2 rounded-lg shadow-sm"><i class="far fa-file-alt text-blue-400 mr-2"></i> 2.2.9 ระบบประสาท</a></li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -280,100 +343,96 @@
 
         <!-- ================= PAGE 4 : RESEARCH ================= -->
         <section id="page4" class="page-section">
-            <div class="minimal-card p-8 md:p-12 border-t-4 border-blue-500">
-                <h2 class="text-3xl font-bold text-gray-800 mb-8 pb-4 border-b border-gray-100 flex items-center">
-                    <i class="fas fa-flask text-blue-500 mr-3"></i> My Classroom Research & Study
-                </h2>
+            <div class="glass-card p-8 md:p-12 border-t-[6px] border-blue-500 max-w-5xl mx-auto">
+                <div data-aos="fade-down">
+                    <div class="w-20 h-20 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-6 text-4xl shadow-inner"><i class="fas fa-flask"></i></div>
+                    <h2 class="text-4xl font-bold text-center text-gray-800 mb-12">My Classroom <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-cyan-500">Research & Study</span></h2>
+                </div>
                 
-                <div class="space-y-4">
-                    <a href="https://drive.google.com/file/d/1G1lnKmUSSR38HZoa8FL3UQ17ZlO_uYFj/view" target="_blank" class="block bg-white p-5 rounded-xl border border-gray-100 hover:border-blue-300 hover:shadow-md transition group">
-                        <div class="flex flex-col md:flex-row gap-4 items-start md:items-center">
-                            <span class="bg-blue-50 text-blue-600 px-3 py-1 rounded font-bold text-sm">2020</span>
-                            <div>
-                                <h3 class="font-medium text-gray-800 group-hover:text-blue-600 transition text-sm md:text-base leading-relaxed">A STUDY ON PROBLEM SOLVING ABILITY IN SCIENCE OF MATHAYOMSUKSA 4 STUDENTS BY USING 5 STEPS COLLABORATIVE LEARNING PROCESS WITH GAMIFICATION CONCEPT</h3>
-                                <p class="text-xs text-gray-400 mt-1">Phakawat Songmuang, 2020</p>
-                            </div>
-                        </div>
-                    </a>
+                <div class="space-y-6 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-blue-300 before:to-transparent">
+                    
+                    <!-- Items -->
+                    <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group" data-aos="fade-up">
+                        <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white bg-blue-500 text-white font-bold text-xs shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10">2020</div>
+                        <a href="https://drive.google.com/file/d/1G1lnKmUSSR38HZoa8FL3UQ17ZlO_uYFj/view" target="_blank" class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] bg-white p-5 rounded-2xl shadow hover-lift border border-gray-50">
+                            <h3 class="font-bold text-gray-800 text-sm md:text-base leading-snug group-hover:text-blue-600 transition">A STUDY ON PROBLEM SOLVING ABILITY IN SCIENCE OF MATHAYOMSUKSA 4 STUDENTS BY USING 5 STEPS COLLABORATIVE LEARNING PROCESS WITH GAMIFICATION CONCEPT</h3>
+                            <p class="text-xs text-gray-400 mt-2"><i class="fas fa-user-edit mr-1"></i> Phakawat Songmuang</p>
+                        </a>
+                    </div>
 
-                    <a href="https://drive.google.com/file/d/12H67DSTirvufE2ZwkUUaFucxaAMML28v/view" target="_blank" class="block bg-white p-5 rounded-xl border border-gray-100 hover:border-blue-300 hover:shadow-md transition group">
-                        <div class="flex flex-col md:flex-row gap-4 items-start md:items-center">
-                            <span class="bg-blue-50 text-blue-600 px-3 py-1 rounded font-bold text-sm">2021</span>
-                            <div>
-                                <h3 class="font-medium text-gray-800 group-hover:text-blue-600 transition text-sm md:text-base leading-relaxed">บอร์ดเกมการเรียนรู้ Sugar Go ส่งเสริมความเข้าใจด้านการเลือกใช้รูปแบบพลังงานกับรอยเท้าคาร์บอน</h3>
-                                <p class="text-xs text-gray-400 mt-1">โครงการพัฒนานวัตกรรมการเรียนรู้แบบสร้างสรรค์เพื่อพลังงานสะอาด (ภควัต สองเมือง และณัฐนรี คณะเมือง, 2021)</p>
-                            </div>
-                        </div>
-                    </a>
+                    <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group" data-aos="fade-up">
+                        <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white bg-blue-500 text-white font-bold text-xs shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10">2021</div>
+                        <a href="https://drive.google.com/file/d/12H67DSTirvufE2ZwkUUaFucxaAMML28v/view" target="_blank" class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] bg-white p-5 rounded-2xl shadow hover-lift border border-gray-50">
+                            <h3 class="font-bold text-gray-800 text-sm md:text-base leading-snug group-hover:text-blue-600 transition">บอร์ดเกมการเรียนรู้ Sugar Go ส่งเสริมความเข้าใจด้านการเลือกใช้รูปแบบพลังงานกับรอยเท้าคาร์บอน</h3>
+                            <p class="text-xs text-gray-400 mt-2"><i class="fas fa-project-diagram mr-1"></i> โครงการพัฒนานวัตกรรมฯ (ภควัต สองเมือง และณัฐนรี คณะเมือง)</p>
+                        </a>
+                    </div>
 
-                    <a href="https://drive.google.com/file/d/171U18FlXYvxigYoqjCxZk9VkpsJHq_At/view" target="_blank" class="block bg-white p-5 rounded-xl border border-gray-100 hover:border-blue-300 hover:shadow-md transition group">
-                        <div class="flex flex-col md:flex-row gap-4 items-start md:items-center">
-                            <span class="bg-blue-50 text-blue-600 px-3 py-1 rounded font-bold text-sm">2023</span>
-                            <div>
-                                <h3 class="font-medium text-gray-800 group-hover:text-blue-600 transition text-sm md:text-base leading-relaxed">CONCEPTUAL UNDERSTANDING ON ANTIBIOTIC AND VACINE AND COMPETENCY OF EXPLAINING SCIENTIFIC PHENOMENA OF GRADE 10 STUDENTS USING SOCIO-SCIENTIFIC ISSUE AND MODEL BASED LEARNING</h3>
-                                <p class="text-xs text-gray-400 mt-1">Phakawat Songmuang, 2023</p>
-                            </div>
-                        </div>
-                    </a>
+                    <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group" data-aos="fade-up">
+                        <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white bg-indigo-500 text-white font-bold text-xs shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10">2023</div>
+                        <a href="https://drive.google.com/file/d/171U18FlXYvxigYoqjCxZk9VkpsJHq_At/view" target="_blank" class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] bg-white p-5 rounded-2xl shadow hover-lift border border-gray-50">
+                            <h3 class="font-bold text-gray-800 text-sm md:text-base leading-snug group-hover:text-indigo-600 transition">CONCEPTUAL UNDERSTANDING ON ANTIBIOTIC AND VACINE AND COMPETENCY OF EXPLAINING SCIENTIFIC PHENOMENA OF GRADE 10 STUDENTS USING SOCIO-SCIENTIFIC ISSUE AND MODEL BASED LEARNING</h3>
+                        </a>
+                    </div>
 
-                    <a href="https://drive.google.com/file/d/16OazwsLd--nmC6JHzemTJQXqVvBGJsX2/view" target="_blank" class="block bg-white p-5 rounded-xl border border-gray-100 hover:border-blue-300 hover:shadow-md transition group">
-                        <div class="flex flex-col md:flex-row gap-4 items-start md:items-center">
-                            <span class="bg-blue-50 text-blue-600 px-3 py-1 rounded font-bold text-sm">2023</span>
-                            <div>
-                                <h3 class="font-medium text-gray-800 group-hover:text-blue-600 transition text-sm md:text-base leading-relaxed">CONCEPTUAL UNDERSTANDING ON ANTIBIOTIC AND VACINE OF GRADE 10 STUDENTS USING SOCIO-SCIENTIFIC ISSUE AND MODEL BASED LEARING</h3>
-                                <p class="text-xs text-gray-400 mt-1">การประชุมวิชาการบัณฑิตศึกษาระดับชาติ ครั้งที่ 16 (NGRC 2023) (ภควัต สองเมือง และวรัญญา จีระวิพูลวรรณ, 2023)</p>
-                            </div>
-                        </div>
-                    </a>
+                    <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group" data-aos="fade-up">
+                        <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white bg-indigo-500 text-white font-bold text-xs shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10">2023</div>
+                        <a href="https://drive.google.com/file/d/16OazwsLd--nmC6JHzemTJQXqVvBGJsX2/view" target="_blank" class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] bg-white p-5 rounded-2xl shadow hover-lift border border-gray-50">
+                            <h3 class="font-bold text-gray-800 text-sm md:text-base leading-snug group-hover:text-indigo-600 transition">CONCEPTUAL UNDERSTANDING ON ANTIBIOTIC AND VACINE OF GRADE 10 STUDENTS USING SOCIO-SCIENTIFIC ISSUE AND MODEL BASED LEARING</h3>
+                            <p class="text-xs text-gray-400 mt-2"><i class="fas fa-university mr-1"></i> NGRC 2023 (ภควัต สองเมือง และวรัญญา จีระวิพูลวรรณ)</p>
+                        </a>
+                    </div>
 
-                    <a href="https://so02.tci-thaijo.org/index.php/EDKKUJ/article/view/264149" target="_blank" class="block bg-white p-5 rounded-xl border border-gray-100 hover:border-blue-300 hover:shadow-md transition group">
-                        <div class="flex flex-col md:flex-row gap-4 items-start md:items-center">
-                            <span class="bg-blue-50 text-blue-600 px-3 py-1 rounded font-bold text-sm">2024</span>
-                            <div>
-                                <h3 class="font-medium text-gray-800 group-hover:text-blue-600 transition text-sm md:text-base leading-relaxed">สมรรถนะการอธิบายปรากฏการณ์ในเชิงวิทยาศาสตร์ของนักเรียนชั้นมัธยมศึกษาปีที่ 4 ที่เรียนรู้โดยใช้ประเด็นทางวิทยาศาสตร์ที่เกี่ยวเนื่องกับสังคมผนวกกับแบบจำลองเป็นฐาน</h3>
-                            </div>
-                        </div>
-                    </a>
-
-                    <a href="https://online.anyflip.com/zqopy/rspx/mobile/index.html" target="_blank" class="block bg-white p-5 rounded-xl border border-gray-100 hover:border-blue-300 hover:shadow-md transition group">
-                        <div class="flex flex-col md:flex-row gap-4 items-start md:items-center">
-                            <span class="bg-blue-50 text-blue-600 px-3 py-1 rounded font-bold text-sm">2024</span>
-                            <div>
-                                <h3 class="font-medium text-gray-800 group-hover:text-blue-600 transition text-sm md:text-base leading-relaxed">Biodiversity Literacy of Grade 10 Students Using Platform iNaturalist through Project-Based Learning</h3>
-                            </div>
-                        </div>
-                    </a>
+                    <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group" data-aos="fade-up">
+                        <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white bg-cyan-500 text-white font-bold text-xs shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10">2024</div>
+                        <a href="https://so02.tci-thaijo.org/index.php/EDKKUJ/article/view/264149" target="_blank" class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] bg-white p-5 rounded-2xl shadow hover-lift border border-gray-50">
+                            <h3 class="font-bold text-gray-800 text-sm md:text-base leading-snug group-hover:text-cyan-600 transition">สมรรถนะการอธิบายปรากฏการณ์ในเชิงวิทยาศาสตร์ของนักเรียนชั้นมัธยมศึกษาปีที่ 4 ที่เรียนรู้โดยใช้ประเด็นทางวิทยาศาสตร์ที่เกี่ยวเนื่องกับสังคมผนวกกับแบบจำลองเป็นฐาน</h3>
+                            <span class="inline-block mt-2 text-xs font-bold text-cyan-600 bg-cyan-50 px-2 py-1 rounded">TCI ThaiJO</span>
+                        </a>
+                    </div>
+                    
+                    <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group" data-aos="fade-up">
+                        <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white bg-cyan-500 text-white font-bold text-xs shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10">2024</div>
+                        <a href="https://online.anyflip.com/zqopy/rspx/mobile/index.html" target="_blank" class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] bg-white p-5 rounded-2xl shadow hover-lift border border-gray-50">
+                            <h3 class="font-bold text-gray-800 text-sm md:text-base leading-snug group-hover:text-cyan-600 transition">Biodiversity Literacy of Grade 10 Students Using Platform iNaturalist through Project-Based Learning</h3>
+                            <span class="inline-block mt-2 text-xs font-bold text-purple-600 bg-purple-50 px-2 py-1 rounded"><i class="fas fa-book-open"></i> AnyFlip E-Book</span>
+                        </a>
+                    </div>
                 </div>
             </div>
         </section>
 
         <!-- ================= PAGE 5 : INNOVATION ================= -->
         <section id="page5" class="page-section">
-            <div class="minimal-card p-8 md:p-12 border-t-4 border-purple-500">
-                <h2 class="text-3xl font-bold text-gray-800 mb-8 pb-4 border-b border-gray-100 flex items-center">
-                    <i class="fas fa-vr-cardboard text-purple-500 mr-3"></i> My Innovation and Media
-                </h2>
+            <div class="glass-card p-8 md:p-16 border-t-[6px] border-purple-500 max-w-5xl mx-auto text-center">
+                <div data-aos="zoom-in">
+                    <div class="w-24 h-24 bg-gradient-to-br from-purple-400 to-pink-500 rounded-full flex items-center justify-center text-white text-4xl shadow-lg mx-auto mb-6"><i class="fas fa-vr-cardboard"></i></div>
+                    <h2 class="text-4xl font-bold text-gray-800 mb-12">My Innovation <span class="text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-pink-500">& Media</span></h2>
+                </div>
                 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm text-center hover:shadow-md transition">
-                        <div class="w-16 h-16 bg-blue-50 text-blue-500 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl"><i class="fas fa-mobile-alt"></i></div>
-                        <h3 class="font-bold text-gray-800 mb-2">1. AR Application</h3>
-                        <p class="text-gray-500 text-sm mb-4">"AR DNA Structure"</p>
-                        <a href="https://youtu.be/7aXA5QQcYKk?si=_P1TvZKoGO5fiDvR" target="_blank" class="text-blue-500 text-sm font-semibold hover:underline"><i class="fab fa-youtube text-red-500 mr-1"></i> ดูวิดีโอสาธิต</a>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-left">
+                    <div class="bg-white/80 backdrop-blur rounded-[2rem] p-8 border border-white shadow-lg hover-lift group relative overflow-hidden" data-aos="fade-up" data-aos-delay="100">
+                        <div class="absolute inset-0 bg-gradient-to-br from-blue-50 to-blue-100 opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10"></div>
+                        <div class="w-16 h-16 bg-blue-100 text-blue-500 rounded-2xl flex items-center justify-center mb-6 text-3xl shadow-inner group-hover:scale-110 transition"><i class="fas fa-mobile-alt"></i></div>
+                        <h3 class="text-2xl font-bold text-gray-800 mb-2">AR Application</h3>
+                        <p class="font-medium text-lg text-gray-600 mb-6">"AR DNA Structure"</p>
+                        <a href="https://youtu.be/7aXA5QQcYKk?si=_P1TvZKoGO5fiDvR" target="_blank" class="inline-flex items-center text-blue-600 font-bold hover:text-blue-800"><i class="fab fa-youtube text-red-500 text-xl mr-2"></i> วิดีโอสาธิต ➔</a>
                     </div>
 
-                    <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm text-center hover:shadow-md transition">
-                        <div class="w-16 h-16 bg-purple-50 text-purple-500 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl"><i class="fas fa-gamepad"></i></div>
-                        <h3 class="font-bold text-gray-800 mb-2">2. PC Game</h3>
-                        <p class="text-gray-500 text-sm mb-4">Learning Darwin and his idea about Natural selection</p>
-                        <a href="https://inskru.com/idea/-Nv7w9cUvLkRzK6melKz" target="_blank" class="text-purple-500 text-sm font-semibold hover:underline"><i class="fas fa-link mr-1"></i> ดูรายละเอียด</a>
+                    <div class="bg-white/80 backdrop-blur rounded-[2rem] p-8 border border-white shadow-lg hover-lift group relative overflow-hidden" data-aos="fade-up" data-aos-delay="200">
+                        <div class="absolute inset-0 bg-gradient-to-br from-purple-50 to-purple-100 opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10"></div>
+                        <div class="w-16 h-16 bg-purple-100 text-purple-500 rounded-2xl flex items-center justify-center mb-6 text-3xl shadow-inner group-hover:scale-110 transition"><i class="fas fa-gamepad"></i></div>
+                        <h3 class="text-2xl font-bold text-gray-800 mb-2">PC Game</h3>
+                        <p class="font-medium text-gray-600 mb-6 line-clamp-2">Learning Darwin and his idea about Natural selection</p>
+                        <a href="https://inskru.com/idea/-Nv7w9cUvLkRzK6melKz" target="_blank" class="inline-flex items-center text-purple-600 font-bold hover:text-purple-800"><i class="fas fa-link text-xl mr-2"></i> อ่านบน insKru ➔</a>
                     </div>
 
-                    <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm text-center hover:shadow-md transition">
-                        <div class="w-16 h-16 bg-green-50 text-green-500 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl"><i class="fas fa-cube"></i></div>
-                        <h3 class="font-bold text-gray-800 mb-2">3. AR App & Marker</h3>
-                        <p class="text-gray-500 text-sm mb-4">แอปพลิเคชัน AR mino และ AR Marker</p>
-                        <span class="text-gray-300 text-sm"><i class="fas fa-info-circle mr-1"></i> สื่อการสอน</span>
+                    <div class="bg-white/80 backdrop-blur rounded-[2rem] p-8 border border-white shadow-lg hover-lift group relative overflow-hidden" data-aos="fade-up" data-aos-delay="300">
+                        <div class="absolute inset-0 bg-gradient-to-br from-green-50 to-green-100 opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10"></div>
+                        <div class="w-16 h-16 bg-green-100 text-green-500 rounded-2xl flex items-center justify-center mb-6 text-3xl shadow-inner group-hover:scale-110 transition"><i class="fas fa-cube"></i></div>
+                        <h3 class="text-2xl font-bold text-gray-800 mb-2">AR App & Marker</h3>
+                        <p class="font-medium text-gray-600 mb-6">แอปพลิเคชัน AR mino และ AR Marker</p>
+                        <span class="inline-block px-4 py-2 bg-gray-100 text-gray-500 rounded-full text-xs font-bold"><i class="fas fa-info-circle"></i> สื่อประกอบการสอน</span>
                     </div>
                 </div>
             </div>
@@ -381,99 +440,99 @@
 
         <!-- ================= PAGE 6 : ACHIEVEMENTS ================= -->
         <section id="page6" class="page-section">
-            <div class="minimal-card p-8 md:p-12 border-t-4 border-yellow-500">
-                <h2 class="text-3xl font-bold text-gray-800 mb-8 pb-4 border-b border-gray-100 flex items-center">
-                    <i class="fas fa-trophy text-yellow-500 mr-3"></i> My Achievements
-                </h2>
+            <div class="glass-card p-8 md:p-12 border-t-[6px] border-yellow-400">
+                <div data-aos="fade-right">
+                    <h2 class="text-4xl font-bold text-gray-800 mb-12 pb-4 border-b border-gray-200 flex items-center">
+                        <div class="w-16 h-16 bg-gradient-to-br from-yellow-300 to-yellow-500 text-white rounded-2xl flex items-center justify-center mr-4 shadow-lg"><i class="fas fa-trophy text-3xl"></i></div>
+                        My <span class="text-transparent bg-clip-text bg-gradient-to-r from-yellow-500 to-orange-500 ml-3">Achievements</span>
+                    </h2>
+                </div>
                 
-                <div class="relative border-l-2 border-gray-200 ml-3 md:ml-4 space-y-10 py-4">
+                <div class="relative border-l-4 border-yellow-200 ml-4 md:ml-8 space-y-12 pb-4">
                     
                     <!-- 2568 -->
-                    <div class="relative pl-6 md:pl-8">
-                        <div class="timeline-dot bg-yellow-500"></div>
-                        <h3 class="text-lg font-bold text-gray-800 mb-3 bg-yellow-50 inline-block px-3 py-1 rounded">ปีการศึกษา 2568</h3>
-                        <ul class="list-disc list-outside ml-4 text-gray-600 space-y-2 text-sm leading-relaxed">
-                            <li>ผู้จัดงานปฏิบัติการสำรวจจธรรมชาติในเมืองของกุมภวาปี 2025 (City Nature Challenge 2025) ซึ่งเป็นความร่วมมือกับ Natural History Museum of Los Angeles County และ Center for Biodiversity and Community Science California Academy of Sciences</li>
-                            <li>ครูที่ปรึกษาทีมนักเรียนเข้ารอบชิงชนะเลิศการแข่งขันรอบชิงชนะเลิศ ในการแข่งขันวิชาการสาธารณสุข (Public Health Contest 2025) ระดับชั้นมัธยมศึกษาตอนปลาย ชิงถ้วยประทานพระเจ้าวรวงศ์เธอ พระองค์เจ้าอทิตยาทรกิติคุณ ปีพุทธศักราช 2568 ประเภทนวัตกรรมการดูแลสุขภาพจิตในโรงเรียน</li>
-                            <li>ครูที่ปรึกษานักเรียน โรงเรียนกุมภวาปี ได้ผ่านเข้ารอบชนะเลิศ จากการประกวดโครงงานวิทยาศาสตร์ ระดับมัธยมศึกษาตอนปลาย สาขาวิทยาศาสตร์ประยุกต์ ในงานสัปดาห์วิทยาศาสตร์แห่งชาติ ส่วนภูมิภาค ประจำปี 2568 ณ คณะวิทยาศาสตร์ มหาวิทยาลัยขอนแก่น</li>
-                            <li>ครูที่ปรึกษานักเรียนได้รับรางวัลดีเด่น (เหรียญทอง) "GLOBE Student Challenge Award 2025" โดย สถาบันส่งเสริมวิทยาศาสตร์และเทคโนโลยี</li>
-                            <li>ได้รับรางวัลรองชนะเลิศอันดับ 2 การวิจัยเชิงปฏิบัติที่ดีในการส่งเสริมและพัฒนาผู้เรียน ตามแนวความสามารถพิเศษ 8 ด้าน (พหุปัญญา) ด้านวิทยาศาสตร์ จากสำนักงานเขตพื้นที่การศึกษามัธยมศึกษาอุดรธานี</li>
-                            <li>เป็นผู้มีผลงานดีเด่น ประจำปีการศึกษา 2567 จากบัณฑิตวิทยาลัย มหาวิทยาลัยราชภัฏอุดรธานี</li>
-                            <li>ได้รับการคัดเลือกเป็น "ครูดี ครูเก่ง" ประจำปีการศึกษา 2568 จากคะแนนโหวตของนักเรียนโรงเรียนกุมภวาปี</li>
-                        </ul>
+                    <div class="relative pl-8 md:pl-10" data-aos="fade-up">
+                        <div class="absolute w-8 h-8 bg-yellow-400 rounded-full -left-[18px] top-0 border-4 border-white shadow-md flex items-center justify-center"><i class="fas fa-star text-white text-xs animate-spin-slow"></i></div>
+                        <h3 class="text-2xl font-bold text-gray-800 mb-4 bg-yellow-50 inline-block px-4 py-2 rounded-xl border border-yellow-100">ปีการศึกษา 2568</h3>
+                        <div class="bg-white/80 backdrop-blur rounded-2xl p-6 border border-white shadow-sm space-y-3">
+                            <p class="flex items-start"><i class="fas fa-check-circle text-green-500 mt-1 mr-3"></i> <span>ผู้จัดงานปฏิบัติการสำรวจจธรรมชาติในเมืองของกุมภวาปี 2025 (City Nature Challenge 2025) ร่วมกับ สถาบันระดับโลก</span></p>
+                            <p class="flex items-start"><i class="fas fa-check-circle text-green-500 mt-1 mr-3"></i> <span>ครูที่ปรึกษาทีมนักเรียนเข้ารอบชิงชนะเลิศ แข่งขันวิชาการสาธารณสุข ชิงถ้วยประทานพระเจ้าวรวงศ์เธอฯ</span></p>
+                            <p class="flex items-start"><i class="fas fa-check-circle text-green-500 mt-1 mr-3"></i> <span>ครูที่ปรึกษานักเรียนเข้ารอบชนะเลิศ ประกวดโครงงานวิทยาศาสตร์ งานสัปดาห์วิทยาศาสตร์แห่งชาติ (ม.ขอนแก่น)</span></p>
+                            <p class="flex items-start"><i class="fas fa-check-circle text-green-500 mt-1 mr-3"></i> <span>ได้รับรางวัลดีเด่น (เหรียญทอง) "GLOBE Student Challenge Award 2025"</span></p>
+                            <p class="flex items-start"><i class="fas fa-check-circle text-green-500 mt-1 mr-3"></i> <span>รางวัลรองชนะเลิศอันดับ 2 การวิจัยเชิงปฏิบัติที่ดีในการส่งเสริมและพัฒนาผู้เรียน 8 ด้าน (พหุปัญญา)</span></p>
+                            <p class="flex items-start"><i class="fas fa-check-circle text-green-500 mt-1 mr-3"></i> <span>ผู้มีผลงานดีเด่น บัณฑิตวิทยาลัย มรภ.อุดรธานี</span></p>
+                            <div class="mt-4 p-4 bg-gradient-to-r from-red-50 to-pink-50 rounded-xl border border-red-100 flex items-center">
+                                <i class="fas fa-heart text-red-500 text-2xl mr-4 animate-bounce"></i> 
+                                <span class="font-bold text-gray-800 text-lg">ได้รับการคัดเลือกเป็น "ครูดี ครูเก่ง" จากคะแนนโหวตของนักเรียนโรงเรียนกุมภวาปี</span>
+                            </div>
+                        </div>
                     </div>
 
                     <!-- 2567 -->
-                    <div class="relative pl-6 md:pl-8">
-                        <div class="timeline-dot bg-gray-400"></div>
-                        <h3 class="text-lg font-bold text-gray-800 mb-3 bg-gray-50 inline-block px-3 py-1 rounded border border-gray-100">ปีการศึกษา 2567</h3>
-                        <ul class="list-disc list-outside ml-4 text-gray-600 space-y-2 text-sm leading-relaxed">
-                            <li>ผลงานระดับ “ดีมาก” ประเภทบทความ โซนนิทรรศการ “เรียนดี มีความสุข” ภายใต้โครงการ OBEC Fair Share and Learn</li>
-                            <li>ผลงานระดับ “ดีมาก” ประเภทบทความ โซนนิทรรศการ “เพิ่มคุณภาพการเรียนรู้” ภายใต้โครงการ OBEC Fair Share and Learn</li>
-                            <li>ได้รับโล่ประกาศเกียรติคุณเป็นครูผู้พัฒนาต้นแบบแผนการจัดการเรียนรู้เชิงรุก ระดับยอดเยี่ยม รายวิชาวิทยาศาสตร์และเทคโนโลยี ปีการศึกษา 2567 จากแผนการจัดการเรียนรู้ เรื่อง โครงสร้างของโปรตีน</li>
-                            <li>งานวิจัย เรื่อง Biodiversity Literacy of Grade 10 Students Using Platform iNaturalist through Project-Based Learning ได้รับการตอบรับให้เผยแพร่ในการประชุมวิชาการ TJ-ELS 2024</li>
-                            <li>ร่วมเผยแพร่ไอเดียการสอนบนเว็บไซต์ insKru.com และได้รับคัดเลือกเป็นไอเดียสร้างแรงบันดาลใจในการออกแบบการเรียนรู้ให้แก่ครูทั่วประเทศในปี 2567</li>
-                            <li>ครูผู้ควบคุมทีมนักเรียนได้รับ "รางวัลรองชนะเลิศระดับประเทศ อันดับ 2" ประกวดจัดทำสื่อการเรียนรู้โครงการห้องเรียนสีเขียว ประจำปี 2567 ประเภท Board game (ผลงานบอร์ดเกม "สมรภูมิไฟฟ้า Zeedz Factory") จัดโดย กฟผ. ร่วมกับ สพฐ.</li>
-                        </ul>
+                    <div class="relative pl-8 md:pl-10" data-aos="fade-up">
+                        <div class="absolute w-6 h-6 bg-yellow-400 rounded-full -left-[14px] top-1 border-4 border-white shadow-sm"></div>
+                        <h3 class="text-xl font-bold text-gray-700 mb-4">ปีการศึกษา 2567</h3>
+                        <div class="bg-white/60 rounded-xl p-5 border border-white shadow-sm space-y-2">
+                            <p class="flex"><i class="fas fa-award text-yellow-500 mt-1 mr-3"></i> <span>ผลงานระดับ “ดีมาก” บทความโซนนิทรรศการ “เรียนดี มีความสุข” (OBEC Fair)</span></p>
+                            <p class="flex"><i class="fas fa-award text-yellow-500 mt-1 mr-3"></i> <span>ผลงานระดับ “ดีมาก” บทความโซนนิทรรศการ “เพิ่มคุณภาพการเรียนรู้” (OBEC Fair)</span></p>
+                            <p class="flex"><i class="fas fa-award text-yellow-500 mt-1 mr-3"></i> <span>โล่ประกาศเกียรติคุณครูผู้พัฒนาต้นแบบแผนการจัดการเรียนรู้เชิงรุก ระดับยอดเยี่ยม</span></p>
+                            <p class="flex"><i class="fas fa-award text-yellow-500 mt-1 mr-3"></i> <span>เผยแพร่งานวิจัยในการประชุมวิชาการระดับนานาชาติ TJ-ELS 2024</span></p>
+                            <p class="flex"><i class="fas fa-award text-yellow-500 mt-1 mr-3"></i> <span>ได้รับคัดเลือกเป็นไอเดียสร้างแรงบันดาลใจในการออกแบบการเรียนรู้ระดับประเทศบน insKru.com</span></p>
+                            <p class="flex"><i class="fas fa-award text-yellow-500 mt-1 mr-3"></i> <span>ครูผู้ควบคุมทีมนักเรียนได้รับ "รางวัลรองชนะเลิศระดับประเทศ อันดับ 2" บอร์ดเกมห้องเรียนสีเขียว กฟผ.</span></p>
+                        </div>
                     </div>
 
                     <!-- 2566 -->
-                    <div class="relative pl-6 md:pl-8">
-                        <div class="timeline-dot bg-gray-400"></div>
-                        <h3 class="text-lg font-bold text-gray-800 mb-3 bg-gray-50 inline-block px-3 py-1 rounded border border-gray-100">ปีการศึกษา 2566</h3>
-                        <ul class="list-disc list-outside ml-4 text-gray-600 space-y-2 text-sm leading-relaxed">
-                            <li>รางวัลระดับ “Top Ten” การประกวดผลงานด้านการผลิตสื่อการเรียนรู้ด้วยรูปแบบ Metaverse โดย สพฐ. ร่วมกับ มทร.ธัญบุรี</li>
-                            <li>ครูผู้สอนนักเรียนได้รับรางวัลเหรียญทอง ชนะเลิศอันดับที่ 1 กิจกรรมการแข่งขันอัจฉริยภาพทางวิทยาศาสตร์ ระดับชั้น ม.4 - ม.6 งานศิลปหัตถกรรมนักเรียนฯ ครั้งที่ 71</li>
-                            <li>รางวัลครูผู้สอนผู้พัฒนาต้นแบบแผนการจัดการเรียนรู้เชิงรุก (Active Learning) ระดับยอดเยี่ยม รายวิชาวิทยาศาสตร์และเทคโนโลยี สพม.อุดรธานี</li>
-                            <li>ครูผู้ควบคุมนักเรียนได้รับรางวัลชนะเลิศ การแข่งขันตอบปัญหาทางเทคโนโลยีชีวภาพ งานสัปดาห์วิทยาศาสตร์แห่งชาติ ประจำปีการศึกษา 2566 ณ มรภ.อุดรธานี</li>
-                        </ul>
+                    <div class="relative pl-8 md:pl-10" data-aos="fade-up">
+                        <div class="absolute w-5 h-5 bg-yellow-300 rounded-full -left-[12px] top-1 border-4 border-white"></div>
+                        <h3 class="text-lg font-bold text-gray-700 mb-3">ปีการศึกษา 2566</h3>
+                        <div class="bg-white/50 rounded-xl p-4 border border-white text-sm text-gray-600 space-y-2">
+                            <p>• รางวัลระดับ “Top Ten” การประกวดผลงานสื่อ Metaverse โดย สพฐ. ร่วมกับ มทร.ธัญบุรี</p>
+                            <p>• ครูผู้สอนนักเรียนได้รับรางวัลเหรียญทอง ชนะเลิศอันดับ 1 แข่งขันอัจฉริยภาพทางวิทยาศาสตร์ ม.4-ม.6 (ศิลปหัตถกรรม ครั้งที่ 71)</p>
+                            <p>• รางวัลครูผู้พัฒนาต้นแบบแผนจัดการเรียนรู้เชิงรุก (Active Learning) ระดับยอดเยี่ยม</p>
+                            <p>• ครูผู้ควบคุมนักเรียนชนะเลิศ แข่งขันตอบปัญหาเทคโนโลยีชีวภาพ มรภ.อุดรธานี</p>
+                        </div>
                     </div>
 
                     <!-- 2565 -->
-                    <div class="relative pl-6 md:pl-8">
-                        <div class="timeline-dot bg-gray-400"></div>
-                        <h3 class="text-lg font-bold text-gray-800 mb-3 bg-gray-50 inline-block px-3 py-1 rounded border border-gray-100">ปีการศึกษา 2565</h3>
-                        <ul class="list-disc list-outside ml-4 text-gray-600 space-y-2 text-sm leading-relaxed">
-                            <li>ครูผู้สอนนักเรียนได้รับรางวัลเหรียญทอง รองชนะเลิศอันดับที่ 1 กิจกรรมการแข่งขันอัจฉริยภาพทางวิทยาศาสตร์ ม.4 - ม.6 งานศิลปหัตถกรรมนักเรียนฯ ครั้งที่ 70</li>
-                            <li>ครูผู้สอนนักเรียนได้รับรางวัลเหรียญอันดับที่ 4 กิจกรรมการแข่งขันอัจฉริยภาพทางวิทยาศาสตร์ ม.1 - ม.3 งานศิลปหัตถกรรมนักเรียนฯ ครั้งที่ 70</li>
-                            <li>วิทยากรกิจกรรมครูปล่อยของอุดรธานี เรื่อง เรียนรู้ให้ล้ำด้วยบอร์ดเกม มรภ.อุดรธานี</li>
-                            <li>ครูผู้ควบคุมนักเรียนเข้าร่วมการแข่งขันการแสดงทางวิทยาศาสตร์ (science show) ระดับ ม.ปลาย สัปดาห์วิทยาศาสตร์แห่งชาติ ม.ขอนแก่น</li>
-                            <li>ครูผู้ควบคุมนักเรียนเข้าร่วมการแข่งขันประกวดโครงงานวิทยาศาสตร์ ระดับ ม.ปลาย สัปดาห์วิทยาศาสตร์แห่งชาติ ม.ขอนแก่น</li>
-                            <li>ครูผู้ควบคุมนักเรียนเข้าร่วมการแข่งขันตอบตอบปัญหาทางวิทยาศาสตร์และคณิตศาสตร์ ระดับ ม.ปลาย สัปดาห์วิทยาศาสตร์แห่งชาติ ม.ขอนแก่น</li>
-                            <li>ครูผู้ควบคุมนักเรียนเข้าร่วมการแข่งขันตอบคำถามทางวิทยาศาสตร์และคณิตศาสตร์ ระดับ ม.ปลาย สัปดาห์วิทยาศาสตร์แห่งชาติ คณะวิทยาศาสตร์ ม.ขอนแก่น</li>
-                            <li>ครูผู้ควบคุมนักเรียนเข้าร่วมการแข่งขันตอบคำถามวิชาการได้ลำดับที่ 12 “ต้นนี้ ชื่ออะไร ครั้งที่ 2” โดยภาควิชาพฤกษศาสตร์ ม.มหิดล</li>
-                        </ul>
+                    <div class="relative pl-8 md:pl-10" data-aos="fade-up">
+                        <div class="absolute w-4 h-4 bg-gray-300 rounded-full -left-[10px] top-1 border-4 border-white"></div>
+                        <h3 class="text-md font-bold text-gray-600 mb-2">ปีการศึกษา 2565</h3>
+                        <div class="text-sm text-gray-500 space-y-1">
+                            <p>• รางวัลเหรียญทอง รองชนะเลิศอันดับ 1 (ม.4-ม.6) และ อันดับ 4 (ม.1-ม.3) แข่งขันอัจฉริยภาพทางวิทยาศาสตร์</p>
+                            <p>• วิทยากรกิจกรรมครูปล่อยของอุดรธานี เรื่อง เรียนรู้ให้ล้ำด้วยบอร์ดเกม</p>
+                            <p>• ควบคุมนักเรียนแข่ง Science Show, โครงงาน, ตอบปัญหา ฯลฯ ในสัปดาห์วิทยาศาสตร์ ม.ขอนแก่น และ ม.มหิดล</p>
+                        </div>
                     </div>
-
+                    
                     <!-- 2564 -->
-                    <div class="relative pl-6 md:pl-8">
-                        <div class="timeline-dot bg-gray-300 border-white"></div>
-                        <h3 class="text-lg font-bold text-gray-800 mb-3 bg-gray-50 inline-block px-3 py-1 rounded border border-gray-100">ปีการศึกษา 2564</h3>
-                        <ul class="list-disc list-outside ml-4 text-gray-600 space-y-2 text-sm leading-relaxed">
-                            <li>ส่งเสริมนักเรียนชุมนุมอนุรักษ์ความหลากหลายทางชีวภาพฯ แข่งขันในกิจกรรม Young Plant Observer Thailand 2021 โดยใช้โปรแกรม iNaturalist (ได้รางวัลชนะเลิศ และชมเชย)</li>
-                            <li>ได้รับการคัดเลือกให้เข้าร่วมโครงการพัฒนานวัตกรรมการเรียนรู้แบบสร้างสรรค์เพื่อพลังงานสะอาด จัดโดย คณะวิทยาการเรียนรู้และศึกษาศาสตร์ ม.ธรรมศาสตร์</li>
-                        </ul>
+                    <div class="relative pl-8 md:pl-10" data-aos="fade-up">
+                        <div class="absolute w-4 h-4 bg-gray-300 rounded-full -left-[10px] top-1 border-4 border-white"></div>
+                        <h3 class="text-md font-bold text-gray-600 mb-2">ปีการศึกษา 2564</h3>
+                        <div class="text-sm text-gray-500 space-y-1">
+                            <p>• ส่งเสริมนักเรียนได้รับรางวัลชนะเลิศและชมเชย กิจกรรม Young Plant Observer Thailand 2021 (iNaturalist)</p>
+                            <p>• ได้รับการคัดเลือกเข้าร่วมโครงการพัฒนานวัตกรรมการเรียนรู้แบบสร้างสรรค์เพื่อพลังงานสะอาด ม.ธรรมศาสตร์</p>
+                        </div>
                     </div>
 
                     <!-- 2563 -->
-                    <div class="relative pl-6 md:pl-8">
-                        <div class="timeline-dot bg-gray-300 border-white"></div>
-                        <h3 class="text-lg font-bold text-gray-800 mb-3 bg-gray-50 inline-block px-3 py-1 rounded border border-gray-100">ปีการศึกษา 2563</h3>
-                        <ul class="list-disc list-outside ml-4 text-gray-600 space-y-2 text-sm leading-relaxed">
-                            <li>ได้รับโล่รางวัล The Best อันดับที่ 1 การบูรณาการการจัดการเรียนรู้ด้วยกระบวนการวิจัยทางการศึกษา ภายใต้โครงการบูรณาการยกระดับคุณภาพการศึกษาฯ มรภ.อุดรธานี ร่วมกับ สพม.อุดรธานี</li>
-                            <li>ได้รับรางวัลชนะเลิศ การประกวดนวัตกรรมที่มีวิธีปฏิบัติที่เป็นเลิศ (Best Practice) ด้านการจัดการเรียนการสอนสิ่งแวดล้อมศึกษาเพื่อการพัฒนาที่ยั่งยืน สพม.อุดรธานี</li>
-                            <li>ได้รับการพิจารณาคัดเลือกหน่วยการเรียนรู้เชิงรุก (active learning) ระดับทองแดง สพม.อุดรธานี</li>
-                            <li>เป็นวิทยากรโครงการยกผลสัมฤทธิ์ทางการเรียน O-NET ชั้นมัธยมศึกษาปีที่ 6 รร.หนองแดงวิทโยดม</li>
-                        </ul>
+                    <div class="relative pl-8 md:pl-10" data-aos="fade-up">
+                        <div class="absolute w-4 h-4 bg-gray-300 rounded-full -left-[10px] top-1 border-4 border-white"></div>
+                        <h3 class="text-md font-bold text-gray-600 mb-2">ปีการศึกษา 2563</h3>
+                        <div class="text-sm text-gray-500 space-y-1">
+                            <p>• โล่รางวัล The Best อันดับที่ 1 การบูรณาการการจัดการเรียนรู้ด้วยกระบวนการวิจัยทางการศึกษา มรภ.อุดรธานี</p>
+                            <p>• รางวัลชนะเลิศ การประกวดนวัตกรรม (Best Practice) ด้านสิ่งแวดล้อมศึกษาเพื่อการพัฒนาที่ยั่งยืน</p>
+                            <p>• วิทยากรโครงการยกผลสัมฤทธิ์ทางการเรียน O-NET ม.6</p>
+                        </div>
                     </div>
-
+                    
                     <!-- 2562 -->
-                    <div class="relative pl-6 md:pl-8">
-                        <div class="timeline-dot bg-gray-300 border-white"></div>
-                        <h3 class="text-lg font-bold text-gray-800 mb-3 bg-gray-50 inline-block px-3 py-1 rounded border border-gray-100">ปีการศึกษา 2562</h3>
-                        <ul class="list-disc list-outside ml-4 text-gray-600 space-y-2 text-sm leading-relaxed">
-                            <li>ครูผู้สอนนักเรียน ได้รับรางวัลระดับเหรียญทอง กิจกรรม การประกวดโครงงานวิทยาศาสตร์ ประเภทสิ่งประดิษฐ์ ระดับชั้น ม.4 - ม. 6 งานมหกรรมศิลปหัตถกรรมนักเรียน ปีการศึกษา 2562 (ระดับเขต)</li>
-                        </ul>
+                    <div class="relative pl-8 md:pl-10" data-aos="fade-up">
+                        <div class="absolute w-4 h-4 bg-gray-300 rounded-full -left-[10px] top-1 border-4 border-white"></div>
+                        <h3 class="text-md font-bold text-gray-600 mb-2">ปีการศึกษา 2562</h3>
+                        <div class="text-sm text-gray-500">
+                            <p>• รางวัลระดับเหรียญทอง ประกวดโครงงานวิทยาศาสตร์ ประเภทสิ่งประดิษฐ์ ม.4-ม.6 งานมหกรรมศิลปหัตถกรรมนักเรียน</p>
+                        </div>
                     </div>
 
                 </div>
@@ -482,61 +541,59 @@
 
         <!-- ================= PAGE 7 : ARTICLES ================= -->
         <section id="page7" class="page-section">
-            <div class="minimal-card p-8 md:p-12 border-t-4 border-rose-500">
-                <h2 class="text-3xl font-bold text-gray-800 mb-8 pb-4 border-b border-gray-100 flex items-center">
-                    <i class="fas fa-newspaper text-rose-500 mr-3"></i> My Articles
-                </h2>
+            <div class="glass-card p-8 md:p-12 border-t-[6px] border-rose-500">
+                <div data-aos="fade-right">
+                    <h2 class="text-4xl font-bold text-gray-800 mb-12 pb-4 border-b border-gray-200 flex items-center">
+                        <div class="w-16 h-16 bg-gradient-to-br from-rose-400 to-red-500 text-white rounded-2xl flex items-center justify-center mr-4 shadow-lg"><i class="fas fa-newspaper text-3xl"></i></div>
+                        My <span class="text-transparent bg-clip-text bg-gradient-to-r from-rose-500 to-pink-500 ml-3">Articles</span>
+                    </h2>
+                </div>
                 
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-                    
-                    <a href="https://drive.google.com/file/d/16OazwsLd--nmC6JHzemTJQXqVvBGJsX2/view" target="_blank" class="block bg-white p-5 rounded-xl border border-gray-100 hover:shadow-md transition">
-                        <div class="text-blue-500 text-xs font-bold mb-2 uppercase">Academic (2023)</div>
-                        <h3 class="font-semibold text-gray-800 text-sm leading-relaxed">1. CONCEPTUAL UNDERSTANDING ON ANTIBIOTIC AND VACINE OF GRADE 10 STUDENTS... (NGRC 2023)</h3>
+                <h3 class="text-2xl font-bold text-gray-800 mb-6 flex items-center" data-aos="fade-up"><i class="fas fa-graduation-cap text-blue-500 mr-3"></i> บทความวิชาการ (Academic)</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+                    <a href="https://drive.google.com/file/d/16OazwsLd--nmC6JHzemTJQXqVvBGJsX2/view" target="_blank" class="block bg-white/80 backdrop-blur p-6 rounded-[1.5rem] border-l-8 border-l-blue-500 shadow-md hover-lift" data-aos="fade-up" data-aos-delay="100">
+                        <h4 class="font-bold text-gray-800 text-lg mb-3">CONCEPTUAL UNDERSTANDING ON ANTIBIOTIC AND VACINE OF GRADE 10 STUDENTS...</h4>
+                        <span class="bg-blue-50 text-blue-600 text-xs font-bold px-3 py-1 rounded-full"><i class="far fa-calendar-alt mr-1"></i> NGRC 2023</span>
                     </a>
-                    
-                    <a href="https://so02.tci-thaijo.org/index.php/EDKKUJ/article/view/264149" target="_blank" class="block bg-white p-5 rounded-xl border border-gray-100 hover:shadow-md transition">
-                        <div class="text-blue-500 text-xs font-bold mb-2 uppercase">Academic (2024)</div>
-                        <h3 class="font-semibold text-gray-800 text-sm leading-relaxed">2. สมรรถนะการอธิบายปรากฏการณ์ในเชิงวิทยาศาสตร์ของนักเรียนชั้นมัธยมศึกษาปีที่ 4...</h3>
+                    <a href="https://so02.tci-thaijo.org/index.php/EDKKUJ/article/view/264149" target="_blank" class="block bg-white/80 backdrop-blur p-6 rounded-[1.5rem] border-l-8 border-l-cyan-500 shadow-md hover-lift" data-aos="fade-up" data-aos-delay="200">
+                        <h4 class="font-bold text-gray-800 text-lg mb-3 leading-snug">สมรรถนะการอธิบายปรากฏการณ์ในเชิงวิทยาศาสตร์ของนักเรียนชั้นมัธยมศึกษาปีที่ 4...</h4>
+                        <span class="bg-cyan-50 text-cyan-600 text-xs font-bold px-3 py-1 rounded-full"><i class="fas fa-link mr-1"></i> ตีพิมพ์วารสาร TCI (2024)</span>
                     </a>
-                    
-                    <a href="https://inskru.com/idea/-NPkvdVuVnVG7nNDN8L1" target="_blank" class="block bg-white p-5 rounded-xl border border-gray-100 hover:shadow-md transition">
-                        <div class="text-orange-500 text-xs font-bold mb-2 uppercase"><i class="fas fa-lightbulb"></i> insKru Idea</div>
-                        <h3 class="font-semibold text-gray-800 text-sm leading-relaxed">3. เรียนวิทย์ให้สนุกด้วยการใช้ประเด็น SSI</h3>
+                </div>
+
+                <h3 class="text-2xl font-bold text-gray-800 mb-6 flex items-center" data-aos="fade-up"><i class="fas fa-lightbulb text-orange-500 mr-3"></i> ไอเดียการสอนบน insKru</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                    <a href="https://inskru.com/idea/-NPkvdVuVnVG7nNDN8L1" target="_blank" class="fancy-item bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col justify-center" data-aos="fade-up">
+                        <div class="text-orange-500 text-xs font-bold mb-2 uppercase tracking-wider"><i class="fas fa-fire mr-1"></i> insKru Idea</div>
+                        <h4 class="font-bold text-gray-800">เรียนวิทย์ให้สนุกด้วยการใช้ประเด็น SSI</h4>
                     </a>
-                    
-                    <a href="https://inskru.com/idea/-NQLaR7UdUAqnCzLuZIo" target="_blank" class="block bg-white p-5 rounded-xl border border-gray-100 hover:shadow-md transition">
-                        <div class="text-orange-500 text-xs font-bold mb-2 uppercase"><i class="fas fa-lightbulb"></i> insKru Idea</div>
-                        <h3 class="font-semibold text-gray-800 text-sm leading-relaxed">4. ตอนนี้ฉันอยู่ในเกมหรือห้องเรียนชีวะ ?</h3>
+                    <a href="https://inskru.com/idea/-NQLaR7UdUAqnCzLuZIo" target="_blank" class="fancy-item bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col justify-center" data-aos="fade-up">
+                        <div class="text-orange-500 text-xs font-bold mb-2 uppercase tracking-wider"><i class="fas fa-fire mr-1"></i> insKru Idea</div>
+                        <h4 class="font-bold text-gray-800">ตอนนี้ฉันอยู่ในเกมหรือห้องเรียนชีวะ ?</h4>
                     </a>
-                    
-                    <a href="https://inskru.com/idea/-Nv7w9cUvLkRzK6melKz" target="_blank" class="block bg-white p-5 rounded-xl border border-gray-100 hover:shadow-md transition">
-                        <div class="text-orange-500 text-xs font-bold mb-2 uppercase"><i class="fas fa-lightbulb"></i> insKru Idea</div>
-                        <h3 class="font-semibold text-gray-800 text-sm leading-relaxed">5. เรียนรู้การเดินทางและแนวคิดของดาร์วินผ่านเกม PC แนว RPG</h3>
+                    <a href="https://inskru.com/idea/-Nv7w9cUvLkRzK6melKz" target="_blank" class="fancy-item bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col justify-center" data-aos="fade-up">
+                        <div class="text-orange-500 text-xs font-bold mb-2 uppercase tracking-wider"><i class="fas fa-fire mr-1"></i> insKru Idea</div>
+                        <h4 class="font-bold text-gray-800">เรียนรู้การเดินทางและแนวคิดของดาร์วินผ่านเกม PC แนว RPG</h4>
                     </a>
-                    
-                    <a href="https://inskru.com/idea/-NvCw83Pzw5ozMNwnw8L" target="_blank" class="block bg-white p-5 rounded-xl border border-gray-100 hover:shadow-md transition">
-                        <div class="text-orange-500 text-xs font-bold mb-2 uppercase"><i class="fas fa-lightbulb"></i> insKru Idea</div>
-                        <h3 class="font-semibold text-gray-800 text-sm leading-relaxed">6. กิจกรรมสิ่งแวดล้อมศึกษาส่งเสริมการอนุรักษ์ทรัพยากรน้ำ</h3>
+                    <a href="https://inskru.com/idea/-NvCw83Pzw5ozMNwnw8L" target="_blank" class="fancy-item bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col justify-center" data-aos="fade-up">
+                        <div class="text-orange-500 text-xs font-bold mb-2 uppercase tracking-wider"><i class="fas fa-fire mr-1"></i> insKru Idea</div>
+                        <h4 class="font-bold text-gray-800">กิจกรรมสิ่งแวดล้อมศึกษาส่งเสริมการอนุรักษ์ทรัพยากรน้ำ</h4>
                     </a>
-                    
-                    <a href="https://inskru.com/idea/-Nvgqzgx1ShciaONaoN4" target="_blank" class="block bg-white p-5 rounded-xl border border-gray-100 hover:shadow-md transition">
-                        <div class="text-orange-500 text-xs font-bold mb-2 uppercase"><i class="fas fa-lightbulb"></i> insKru Idea</div>
-                        <h3 class="font-semibold text-gray-800 text-sm leading-relaxed">7. ทำไมคุณครูไม่ลองใช้ AI Gemini เพื่อช่วยประหยัดเวลา ?</h3>
+                    <a href="https://inskru.com/idea/-Nvgqzgx1ShciaONaoN4" target="_blank" class="fancy-item bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col justify-center" data-aos="fade-up">
+                        <div class="text-orange-500 text-xs font-bold mb-2 uppercase tracking-wider"><i class="fas fa-fire mr-1"></i> insKru Idea</div>
+                        <h4 class="font-bold text-gray-800">ทำไมคุณครูไม่ลองใช้ AI Gemini เพื่อช่วยประหยัดเวลา ?</h4>
                     </a>
-                    
-                    <a href="https://inskru.com/idea/-Nvm7cXgHvlCFNWTB_Zm" target="_blank" class="block bg-white p-5 rounded-xl border border-gray-100 hover:shadow-md transition">
-                        <div class="text-orange-500 text-xs font-bold mb-2 uppercase"><i class="fas fa-lightbulb"></i> insKru Idea</div>
-                        <h3 class="font-semibold text-gray-800 text-sm leading-relaxed">8. ครูสายเขียวห้ามพลาด!! ไอเดียการใช้ iNaturalist ในการสอน</h3>
+                    <a href="https://inskru.com/idea/-Nvm7cXgHvlCFNWTB_Zm" target="_blank" class="fancy-item bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col justify-center" data-aos="fade-up">
+                        <div class="text-orange-500 text-xs font-bold mb-2 uppercase tracking-wider"><i class="fas fa-fire mr-1"></i> insKru Idea</div>
+                        <h4 class="font-bold text-gray-800">ครูสายเขียวห้ามพลาด!! ไอเดียการใช้ iNaturalist ในการสอน</h4>
                     </a>
-                    
-                    <a href="https://inskru.com/idea/-OP4P4egfnue-N1iJQFG" target="_blank" class="block bg-white p-5 rounded-xl border border-gray-100 hover:shadow-md transition">
-                        <div class="text-orange-500 text-xs font-bold mb-2 uppercase"><i class="fas fa-lightbulb"></i> insKru Idea</div>
-                        <h3 class="font-semibold text-gray-800 text-sm leading-relaxed">9. ส่องสารพันชีวิต! สร้างฐานข้อมูลโรงเรียนด้วย iNaturalist</h3>
+                    <a href="https://inskru.com/idea/-OP4P4egfnue-N1iJQFG" target="_blank" class="fancy-item bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col justify-center" data-aos="fade-up">
+                        <div class="text-orange-500 text-xs font-bold mb-2 uppercase tracking-wider"><i class="fas fa-fire mr-1"></i> insKru Idea</div>
+                        <h4 class="font-bold text-gray-800">ส่องสารพันชีวิต! สร้างฐานข้อมูลโรงเรียนด้วย iNaturalist</h4>
                     </a>
-                    
-                    <a href="https://inskru.com/idea/-Ob7wzy4RiNiNVZjuh2I" target="_blank" class="block bg-white p-5 rounded-xl border border-gray-100 hover:shadow-md transition">
-                        <div class="text-orange-500 text-xs font-bold mb-2 uppercase"><i class="fas fa-lightbulb"></i> insKru Idea</div>
-                        <h3 class="font-semibold text-gray-800 text-sm leading-relaxed">10. ไอเดียการใช้ Gemini ร่วมกับ ZipGrade เพื่อพัฒนาการสอน</h3>
+                    <a href="https://inskru.com/idea/-Ob7wzy4RiNiNVZjuh2I" target="_blank" class="fancy-item bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col justify-center" data-aos="fade-up">
+                        <div class="text-orange-500 text-xs font-bold mb-2 uppercase tracking-wider"><i class="fas fa-fire mr-1"></i> insKru Idea</div>
+                        <h4 class="font-bold text-gray-800">ไอเดียการใช้ Gemini ร่วมกับ ZipGrade เพื่อพัฒนาการสอน</h4>
                     </a>
                 </div>
             </div>
@@ -544,35 +601,55 @@
 
         <!-- ================= PAGE 8 : STORY ================= -->
         <section id="page8" class="page-section">
-            <div class="minimal-card p-8 md:p-14 max-w-4xl mx-auto border-t-4 border-gray-800">
-                <div class="flex flex-col md:flex-row gap-10 items-center md:items-start">
+            <div class="glass-card p-8 md:p-16 max-w-4xl mx-auto border-t-[6px] border-gray-800 relative overflow-hidden" data-aos="zoom-in">
+                <!-- BG Decoration -->
+                <div class="absolute top-0 right-0 w-64 h-64 bg-emerald-200 rounded-full blur-3xl opacity-20 -mr-20 -mt-20 z-0"></div>
+
+                <div class="flex flex-col md:flex-row gap-12 items-center md:items-start relative z-10">
                     <!-- Photo -->
-                    <div class="w-48 h-48 flex-shrink-0">
-                        <img src="https://drive.google.com/thumbnail?id=1J57aSX6-5shwyPAcfTuDTRzdVZGxNPYM&sz=w500" alt="Phakawat Songmuang" class="w-full h-full rounded-full object-cover shadow-sm border border-gray-100">
+                    <div class="w-48 h-48 md:w-64 md:h-64 flex-shrink-0 relative group">
+                        <div class="absolute inset-0 bg-gradient-to-tr from-emerald-400 to-blue-500 rounded-full animate-spin group-hover:scale-105 transition-transform duration-500" style="animation-duration: 10s;"></div>
+                        <img src="https://drive.google.com/thumbnail?id=1J57aSX6-5shwyPAcfTuDTRzdVZGxNPYM&sz=w500" alt="Phakawat Songmuang" class="absolute inset-[4px] w-[calc(100%-8px)] h-[calc(100%-8px)] rounded-full object-cover border-[5px] border-white z-10 bg-white">
                     </div>
 
                     <!-- Info -->
                     <div class="flex-1 text-center md:text-left">
-                        <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-1">Phakawat Songmuang</h2>
-                        <h3 class="text-xl text-gray-500 font-light mb-6">[ภควัต สองเมือง]</h3>
+                        <h2 class="text-4xl md:text-5xl font-extrabold text-gray-800 mb-1 tracking-tight">Phakawat Songmuang</h2>
+                        <h3 class="text-2xl text-gray-500 font-light mb-6 tracking-wide">[ภควัต สองเมือง]</h3>
                         
-                        <p class="text-gray-600 leading-relaxed mb-8 bg-gray-50 p-5 rounded-xl border border-gray-100 text-sm md:text-base">
-                            Hello and welcome to my electronic portfolio. My name is Phakawat Songmuang. I am a biology teacher at a large-size secondary school under the Udon Thani Secondary Educational Service Area Office, Thailand. I am interested in science education, environmental education, learning innovation and educational technology.
+                        <p class="text-lg text-gray-600 leading-relaxed mb-8 bg-white/60 p-6 rounded-2xl shadow-sm border border-white">
+                            Hello and welcome to my electronic portfolio. My name is Phakawat Songmuang. I am a biology teacher at a large-size secondary school under the Udon Thani Secondary Educational Service Area Office, Thailand. I am interested in <strong class="text-emerald-600 font-medium">science education, environmental education, learning innovation, and educational technology.</strong>
                         </p>
 
-                        <!-- Educational Background ตามข้อมูลเป๊ะ -->
-                        <div class="border-t border-gray-100 pt-6">
-                            <h4 class="text-xl font-bold text-gray-800 mb-4 flex items-center justify-center md:justify-start">
-                                <i class="fas fa-graduation-cap text-gray-400 mr-3"></i> Educational Background
+                        <!-- Educational Background -->
+                        <div class="relative">
+                            <h4 class="text-2xl font-bold text-gray-800 mb-6 flex items-center justify-center md:justify-start">
+                                <div class="w-12 h-12 bg-gradient-to-br from-blue-400 to-blue-600 text-white rounded-xl flex items-center justify-center mr-4 shadow-lg"><i class="fas fa-user-graduate"></i></div> 
+                                Educational Background
                             </h4>
-                            <ul class="space-y-4 text-left text-sm md:text-base">
-                                <li class="bg-white p-4 rounded-xl border border-gray-100 shadow-sm">
-                                    <p class="font-bold text-gray-800">Bachelor of Education (1st Class Honors)</p>
-                                    <p class="text-gray-500">in Secondary Education (Major: Biology), Chulalongkorn University.</p>
+                            
+                            <ul class="space-y-4 text-left">
+                                <li class="flex items-start bg-white/80 p-5 rounded-2xl border border-white shadow-sm hover-lift group">
+                                    <div class="bg-blue-100 w-12 h-12 rounded-full flex items-center justify-center mr-4 flex-shrink-0 group-hover:bg-blue-500 transition-colors">
+                                        <i class="fas fa-graduation-cap text-blue-500 group-hover:text-white text-xl transition-colors"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-bold text-gray-800 text-lg mb-1">Master of Education Program</p>
+                                        <p class="text-gray-500">in Science Education, Udon Thani Rajabhat University.</p>
+                                    </div>
                                 </li>
-                                <li class="bg-white p-4 rounded-xl border border-gray-100 shadow-sm">
-                                    <p class="font-bold text-gray-800">Master of Education Program</p>
-                                    <p class="text-gray-500">in Science Education, Udon Thani Rajabhat University.</p>
+                                
+                                <li class="flex items-start bg-white/80 p-5 rounded-2xl border border-white shadow-sm hover-lift group">
+                                    <div class="bg-yellow-100 w-12 h-12 rounded-full flex items-center justify-center mr-4 flex-shrink-0 group-hover:bg-yellow-500 transition-colors">
+                                        <i class="fas fa-medal text-yellow-600 group-hover:text-white text-xl transition-colors"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-bold text-gray-800 text-lg mb-1 flex items-center flex-wrap gap-2">
+                                            Bachelor of Education
+                                            <span class="text-xs bg-gradient-to-r from-yellow-400 to-yellow-600 text-white px-2 py-1 rounded-md shadow-sm">(1st Class Honors)</span>
+                                        </p>
+                                        <p class="text-gray-500">in Secondary Education (Major: Biology), Chulalongkorn University.</p>
+                                    </div>
                                 </li>
                             </ul>
                         </div>
@@ -584,12 +661,57 @@
     </main>
 
     <!-- Footer -->
-    <footer class="py-8 text-center text-gray-400 text-sm border-t border-gray-100 mt-auto bg-white">
-        <p>&copy; 2026 Phakawat Songmuang | E-Portfolio</p>
+    <footer class="py-8 text-center text-gray-400 text-sm border-t border-white/50 mt-auto bg-white/30 backdrop-blur-md">
+        <p>&copy; 2026 Phakawat Songmuang | E-Portfolio. Designed with World-Class UX/UI.</p>
     </footer>
 
-    <!-- SPA Logic Script -->
+    <!-- Interactive Scripts -->
+    <!-- 1. Particles.js -->
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <!-- 2. VanillaTilt.js (3D Hover) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.0/vanilla-tilt.min.js"></script>
+    <!-- 3. Typed.js (Auto Typing) -->
+    <script src="https://unpkg.com/typed.js@2.0.16/dist/typed.umd.js"></script>
+    <!-- 4. AOS Animation -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
     <script>
+        // Init Typing Effect
+        new Typed('#typed-text', {
+            strings: ['Science Educator', 'Learning Innovator', 'Biology Enthusiast'],
+            typeSpeed: 60, backSpeed: 30, backDelay: 2000, loop: true, cursorChar: '|'
+        });
+
+        // Init Particles JS (Clean & Bright Theme)
+        particlesJS("particles-js", {
+            "particles": {
+                "number": { "value": 40, "density": { "enable": true, "value_area": 800 } },
+                "color": { "value": ["#10b981", "#0ea5e9"] },
+                "shape": { "type": "circle" },
+                "opacity": { "value": 0.3, "random": false },
+                "size": { "value": 4, "random": true },
+                "line_linked": { "enable": true, "distance": 150, "color": "#94a3b8", "opacity": 0.2, "width": 1 },
+                "move": { "enable": true, "speed": 1.5, "direction": "none", "random": true, "out_mode": "out" }
+            },
+            "interactivity": {
+                "detect_on": "window",
+                "events": {
+                    "onhover": { "enable": true, "mode": "grab" },
+                    "onclick": { "enable": true, "mode": "push" },
+                    "resize": true
+                },
+                "modes": {
+                    "grab": { "distance": 180, "line_linked": { "opacity": 0.5 } },
+                    "push": { "particles_nb": 3 }
+                }
+            },
+            "retina_detect": true
+        });
+
+        // Init AOS (Animate on Scroll)
+        AOS.init({ once: true, offset: 50 });
+
+        // SPA Navigation Logic
         function showPage(pageId) {
             // ซ่อนทุกหน้า
             document.querySelectorAll('.page-section').forEach(page => {
@@ -604,8 +726,11 @@
             const targetPage = document.getElementById(pageId);
             if(targetPage) {
                 targetPage.classList.add('active');
+                // Refresh AOS animations
+                setTimeout(() => { AOS.refresh(); }, 100);
             }
-            // เพิ่มแถบ active ให้เมนูที่เลือก
+            
+            // เพิ่มแถบ active ให้เมนูที่เลือก (ถ้ากดจาก Navbar)
             const navBtn = document.getElementById('nav-' + pageId);
             if(navBtn) navBtn.classList.add('active');
             
